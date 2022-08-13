@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SLS</string>
+
+    <string name="facebook_app_id">422908506566930</string>
+    <string name="fb_login_protocol_scheme">fb422908506566930</string>
+    <string name="facebook_client_token">0fe212667d237ce00bb4a1f0e9493eb9</string>
+
+
+
+</resources>
