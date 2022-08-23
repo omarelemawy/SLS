@@ -55,7 +55,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         builder: (context,state){
           return Scaffold(
             key: keyScaffold,
-            backgroundColor:HexColor("#191919"),
+            backgroundColor:HexColor("#f7b6b8"),
             body: Padding(
               padding: const EdgeInsets.only(top: 10.0, right: 30, left: 30),
               child: SingleChildScrollView(
@@ -107,7 +107,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 height: 160,
                                 width: 160,
                                 decoration: BoxDecoration(
-                                  color: HexColor("#191919"),
+                                  color: HexColor("#f7b6b8"),
                                   shape: BoxShape.circle,
                                   border: Border.all(color: HexColor("#F899C0"),width: 2)
                                 ),
@@ -115,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   backgroundColor: HexColor("#191919"),
                                   backgroundImage: FileImage(_file!),
                                 ):CircleAvatar(
-                                  backgroundColor: HexColor("#191919"),
+                                  backgroundColor: Colors.grey[300],
                                   child:Icon(CupertinoIcons.person_fill,color: Colors.grey[600],size: 140,),
                                 ),
                               ),
@@ -145,16 +145,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
 
-                        style: TextStyle(color: Colors.grey[400]) ,
+                        style: TextStyle(color: Colors.white) ,
                         decoration:  InputDecoration(
-                            label:  Text("Username",style: TextStyle(color: Colors.grey[600])),
-                            prefixIcon: Icon(CupertinoIcons.person_fill,color: Colors.grey[600],),
+                            label:  Text("Username",style: TextStyle(color: Colors.white)),
+                            prefixIcon: Icon(CupertinoIcons.person_fill,color: Colors.white,),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15)
                             ),
                            enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(color: Colors.grey[400]!)
+                              borderSide: BorderSide(color: Colors.white)
                           ),
                           contentPadding: EdgeInsets.symmetric(vertical: 18.0),
                         ),
@@ -174,16 +174,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           }
                           return null;
                         },
-                        style: TextStyle(color: Colors.grey[400]) ,
+                        style: TextStyle(color: Colors.white) ,
                         decoration:  InputDecoration(
-                            label:  Text("Email",style: TextStyle(color: Colors.grey[600])),
-                            prefixIcon: Icon(CupertinoIcons.mail_solid,color: Colors.grey[600],),
+                            label:  Text("Email",style: TextStyle(color: Colors.white)),
+                            prefixIcon: Icon(CupertinoIcons.mail_solid,color: Colors.white,),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15)
                           ),
                           enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(color: Colors.grey[400]!)
+                              borderSide: BorderSide(color: Colors.white)
                           ),
                           contentPadding: EdgeInsets.symmetric(vertical: 18.0),
                         ),
@@ -200,16 +200,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           }
                           return null;
                         },
-                        style: TextStyle(color: Colors.grey[400]) ,
+                        style: TextStyle(color: Colors.white) ,
                         decoration:  InputDecoration(
-                            label:  Text("Password",style: TextStyle(color: Colors.grey[600]),),
-                            prefixIcon:  Icon(CupertinoIcons.lock_fill,color: Colors.grey[600],),
+                            label:  Text("Password",style: TextStyle(color: Colors.white),),
+                            prefixIcon:  Icon(CupertinoIcons.lock_fill,color: Colors.white,),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15)
                           ),
                           enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
-                              borderSide: BorderSide(color: Colors.grey[400]!)
+                              borderSide: BorderSide(color: Colors.white)
                           ),
                           contentPadding: EdgeInsets.symmetric(vertical: 18.0),
                         ),

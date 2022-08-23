@@ -41,7 +41,7 @@ class _MyOrdersScreenState extends State<MyOrdersScreen> {
               height: 400,
               child: Center(
                 child: Text("Nothing here"
-                  ,style: TextStyle(color: Colors.grey[400],
+                  ,style: TextStyle(color: Colors.white,
                       fontSize: 25,fontWeight: FontWeight.bold),),
               ),
             )

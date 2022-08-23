@@ -31,10 +31,10 @@ class _CommentScreenState extends State<CommentScreen> {
                   decoration: InputDecoration(
                     border: InputBorder.none,
                     labelText: 'write comment',
-                    labelStyle: TextStyle(color: Colors.grey[400]),
+                    labelStyle: TextStyle(color: Colors.white),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide(color: Colors.grey[200]!)
+                      borderSide: BorderSide(color: Colors.white)
                     ),
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
@@ -61,7 +61,7 @@ class _CommentScreenState extends State<CommentScreen> {
           Row(
             children: [
               SizedBox(width: 15,),
-              Text("1 Comments",style: TextStyle(color: Colors.grey[300]),),
+              Text("1 Comments",style: TextStyle(color: Colors.white),),
               Spacer(),
               Text("Newest first",style: TextStyle(color: Colors.blue[700],fontWeight: FontWeight.bold),),
               SizedBox(width: 20,),
@@ -77,7 +77,7 @@ class _CommentScreenState extends State<CommentScreen> {
             height: .5,
             margin: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
             width: MediaQuery.of(context).size.width,
-            color: Colors.grey[300],
+            color: Colors.white,
           ),
           SizedBox(height: 10,),
           Row(
@@ -101,13 +101,13 @@ class _CommentScreenState extends State<CommentScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(" Omer Mohamed Elmawy",style: TextStyle(color: Colors.grey[300],fontWeight: FontWeight.bold),),
+                  Text(" Omer Mohamed Elmawy",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
                   SizedBox(height: 4,),
                   Container(
                     width: MediaQuery.of(context).size.width/1.5,
                     padding: EdgeInsets.symmetric(vertical: 15,horizontal: 10),
                     decoration: BoxDecoration(
-                        color: Colors.blueGrey[200],
+                        color: Colors.blueGrey[300],
                         borderRadius: BorderRadius.circular(10)
                     ),
                     child: Text("Nice",style: TextStyle(color: Colors.blueGrey[900]),),
@@ -118,12 +118,12 @@ class _CommentScreenState extends State<CommentScreen> {
                       SvgPicture.asset(
                         "assets/profile_icons/like.svg",
                         semanticsLabel: 'Acme Logo',
-                        color: Colors.grey[500],
+                        color: Colors.grey[100],
                         width: 20,
                         height: 20,
                       ),
                       const SizedBox(width: 8,),
-                      Text("2",style: TextStyle(color: Colors.grey[300]),),
+                      Text("2",style: TextStyle(color: Colors.grey[100]),),
                       const SizedBox(width: 18,),
                       SvgPicture.asset(
                         "assets/profile_icons/share.svg",
@@ -133,7 +133,7 @@ class _CommentScreenState extends State<CommentScreen> {
                         height: 25,
                       ),
                       const SizedBox(width: 70,),
-                      Text("Jun 20,2022",style: TextStyle(color: Colors.grey[500],fontSize: 12),)
+                      Text("Jun 20,2022",style: TextStyle(color: Colors.grey[700],fontSize: 12),)
                     ],
                   ),
                   SizedBox(height: 15,),

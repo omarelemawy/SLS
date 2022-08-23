@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,8 +11,8 @@ import '../comment/comment_screen.dart';
 import '../user_profile/user_profile_screen.dart';
 
 class StreamField extends StatefulWidget {
-  const StreamField({Key? key}) : super(key: key);
-
+   StreamField(/*this.streamSnapshot,*/{Key? key}) : super(key: key);
+  /*AsyncSnapshot<QuerySnapshot> streamSnapshot;*/
   @override
   State<StreamField> createState() => _StreamFieldState();
 }
@@ -22,7 +23,7 @@ class _StreamFieldState extends State<StreamField> {
     return Material(
       elevation: 2,
       borderRadius: BorderRadius.circular(10),
-      color: HexColor("#323232"),
+      color: HexColor("#f7b6b8"),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -49,27 +50,27 @@ class _StreamFieldState extends State<StreamField> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text("Nacer Bounfws",style:
-                            TextStyle(color: Colors.grey[300],fontWeight: FontWeight.bold,fontSize: 14),),
+                            TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 14),),
                             const SizedBox(height: 2,),
-                            const Text("2 days ago",style:
-                            const TextStyle(color: Colors.grey,fontSize: 12),),
+                             Text("2 days ago",style:
+                             TextStyle(color: Colors.grey[800],fontSize: 12),),
                           ],
                         ),
                       ],
                     )),
 
-                const SizedBox(width: 20),
+                const SizedBox(width: 60),
                 Container(
                   padding: const EdgeInsets.symmetric(vertical:6,horizontal:30),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blue[700]!,width: 1.5),
+                    border: Border.all(color: Colors.blue[900]!,width: 1.5),
                     borderRadius: BorderRadius.circular(20),
 
                   ),
                   child: Text(
                     "Follow",
                     style: TextStyle(
-                      color: Colors.blue[700],
+                      color: Colors.blue[900],
                       fontSize: 14,
                       fontWeight:FontWeight.w500
                     ),
@@ -83,7 +84,7 @@ class _StreamFieldState extends State<StreamField> {
                    child:
                    Padding(
                      padding: const EdgeInsets.all(8.0),
-                     child: Icon(Icons.more_vert,color: Colors.blue[800],),
+                     child: Icon(Icons.more_vert,color: Colors.blue[900],),
                    ))
               ],
             ),
@@ -95,15 +96,15 @@ class _StreamFieldState extends State<StreamField> {
                 Container(
                   width: MediaQuery.of(context).size.width/3,
                   height: 1,
-                  color: Colors.grey,
+                  color: Colors.white,
                 ),
                 const SizedBox(width: 6,),
-                const Text("Was Live",style: TextStyle(color: Colors.red,fontSize: 12,fontWeight: FontWeight.bold),),
+                 Text("Was Live",style: TextStyle(color: Colors.red[900],fontSize: 12,fontWeight: FontWeight.bold),),
                 const SizedBox(width: 6,),
                 Container(
                   width: MediaQuery.of(context).size.width/3,
                   height: 1,
-                  color: Colors.grey,
+                  color: Colors.white,
                 ),
 
               ],
@@ -134,17 +135,17 @@ class _StreamFieldState extends State<StreamField> {
                 SvgPicture.asset(
                     "assets/profile_icons/like.svg",
                     semanticsLabel: 'Acme Logo',
-                   color: Colors.grey[300],
+                   color: Colors.white,
                    width: 28,
                   height: 28,
                 ),
                 const SizedBox(width: 10,),
-                Text("2",style: TextStyle(color: Colors.grey[300]),),
+                Text("2",style: TextStyle(color: Colors.white),),
                 const SizedBox(width: 80,),
                 Container(
                   width: 1,
                   height:30,
-                  color: Colors.grey[300],
+                  color: Colors.white,
                 ),
                 const SizedBox(width: 80,),
                 InkWell(
@@ -173,12 +174,12 @@ class _StreamFieldState extends State<StreamField> {
                       SvgPicture.asset(
                         "assets/comment.svg",
                         semanticsLabel: 'Acme Logo',
-                        color: Colors.pink[400],
+                        color: Colors.black,
                         width: 30,
                         height: 30,
                       ),
                       const SizedBox(width: 10,),
-                      Text("3",style: TextStyle(color: Colors.pink[400]),),
+                      Text("3",style: TextStyle(color: Colors.black),),
                     ],
                   ),
                 ),

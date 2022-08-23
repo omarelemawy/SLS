@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hex_color/flutter_hex_color.dart';
 import 'package:flutter_svg/svg.dart';
@@ -14,146 +15,150 @@ class FeedsScreen extends StatefulWidget {
 }
 
 class _FeedsScreenState extends State<FeedsScreen> {
+  final _fireStore=FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     return Material(
       elevation: 2,
-      color: HexColor("#323232"),
+      color: HexColor("#f7b6b8"),
       borderRadius: BorderRadius.circular(10),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
+        child:  Column(
               children: [
+                Row(
+                  children: [
 
-                InkWell(
-                    onTap: (){
-                      Navigator.push(context,
-                          MaterialPageRoute(builder:
-                              (context)=>const UserProfileScreen()));
-                    },
-                    child: Row(
-                      children: [
-                        const CircleAvatar(
-                          child: Text("N",style: TextStyle(color: Colors.white),),
-                          backgroundColor: Colors.deepOrange,
-                          radius: 20,
-                        ),
-                        const SizedBox(width: 10,),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    InkWell(
+                        onTap: (){
+                          Navigator.push(context,
+                              MaterialPageRoute(builder:
+                                  (context)=>const UserProfileScreen()));
+                        },
+                        child: Row(
                           children: [
-                            Text("Nacer Bounfws",style:
-                            TextStyle(color: Colors.grey[300],fontWeight: FontWeight.bold,fontSize: 14),),
-                            const SizedBox(height: 2,),
-                            const Text("2 days ago",style:
-                            const TextStyle(color: Colors.grey,fontSize: 12),),
+                             CircleAvatar(
+                              child: /*Image.network("")*/
+                              Text("N",style: TextStyle(color: Colors.white),),
+                              backgroundColor: Colors.deepOrange,
+                              radius: 20,
+                            ),
+
+                             const SizedBox(width: 10,),
+                             Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Nacer Bounfws",style:
+                                TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 14),),
+                                const SizedBox(height: 2,),
+                                 Text("2 days ago",style:
+                                 TextStyle(color: Colors.grey[900],fontSize: 12),),
+                              ],
+                            ),
+
                           ],
-                        ),
-                      ],
-                    )),
+                        )),
 
-                const SizedBox(width: 20),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical:6,horizontal:30),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blue[700]!,width: 1.5),
-                    borderRadius: BorderRadius.circular(20),
+                    const SizedBox(width: 60),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical:6,horizontal:30),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blue[900]!,width: 1.5),
+                        borderRadius: BorderRadius.circular(20),
 
-                  ),
-                  child: Text(
-                    "Follow",
-                    style: TextStyle(
-                        color: Colors.blue[700],
-                        fontSize: 14,
-                        fontWeight:FontWeight.w500
-                    ),
-                  ),
-                ),
-                const Spacer(),
-                InkWell(
-                   onTap: (){
-                     showDialogOfPost(context);
-                   },
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(Icons.more_vert,color: Colors.blue[800],),
-                ))
-              ],
-            ),
-            const SizedBox(height: 20,),
-             Text("Text messages are used for personal, family, business and social purposes. Governmental and no"
-                "n-governmental organizations use text messaging for communication",style: TextStyle(color:Colors.grey[400]),),
-            const SizedBox(height: 20,),
-            Center(
-              child: Container(
-                width: MediaQuery.of(context).size.width/1.2,
-                height: 1,
-                color: Colors.grey[300],
-              ),
-            ),
-            const SizedBox(height: 10,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset(
-                  "assets/profile_icons/like.svg",
-                  semanticsLabel: 'Acme Logo',
-                  color: Colors.grey[300],
-                  width: 28,
-                  height: 28,
-                ),
-                const SizedBox(width: 10,),
-                Text("2",style: TextStyle(color: Colors.grey[300]),),
-                const SizedBox(width: 80,),
-                Container(
-                  width: 1,
-                  height:30,
-                  color: Colors.grey[300],
-                ),
-                const SizedBox(width: 80,),
-                InkWell(
-                  onTap: (){
-                    showModalBottomSheet(
-                        context: context,
-                        useRootNavigator: true,
-                        isScrollControlled: true,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top:  Radius.circular(20),
-                          ),
-                        ),
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        builder: (context) {
-                          return Container(
-                              color: postColor,
-                              height: MediaQuery.of(context).size.height-30,
-                              padding: EdgeInsets.all(10),
-                              child: CommentScreen());
-                        });
-
-                  },
-                  child: Row(
-                    children: [
-                      SvgPicture.asset(
-                        "assets/comment.svg",
-                        semanticsLabel: 'Acme Logo',
-                        color: Colors.pink[400],
-                        width: 30,
-                        height: 30,
                       ),
-                      const SizedBox(width: 10,),
-                      Text("3",style: TextStyle(color: Colors.pink[400]),),
-                    ],
+                      child: Text(
+                        "Follow",
+                        style: TextStyle(
+                            color: Colors.blue[900],
+                            fontSize: 14,
+                            fontWeight:FontWeight.w500
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                    InkWell(
+                       onTap: (){
+                         showDialogOfPost(context);
+                       },
+                        child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(Icons.more_vert,color: Colors.blue[900],),
+                    ))
+                  ],
+                ),
+                const SizedBox(height: 20,),
+                 Text("Text messages are used for personal, family, business and social purposes. Governmental and no"
+                    "n-governmental organizations use text messaging for communication",style: TextStyle(color:Colors.black),),
+                const SizedBox(height: 20,),
+                Center(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width/1.2,
+                    height: 1,
+                    color: Colors.white,
                   ),
                 ),
+                const SizedBox(height: 10,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      "assets/profile_icons/like.svg",
+                      semanticsLabel: 'Acme Logo',
+                      color: Colors.white,
+                      width: 28,
+                      height: 28,
+                    ),
+                    const SizedBox(width: 10,),
+                    Text("2",style: TextStyle(color: Colors.white),),
+                    const SizedBox(width: 80,),
+                    Container(
+                      width: 1,
+                      height:30,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: 80,),
+                    InkWell(
+                      onTap: (){
+                        showModalBottomSheet(
+                            context: context,
+                            useRootNavigator: true,
+                            isScrollControlled: true,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top:  Radius.circular(20),
+                              ),
+                            ),
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            builder: (context) {
+                              return Container(
+                                  color: postColor,
+                                  height: MediaQuery.of(context).size.height-30,
+                                  padding: EdgeInsets.all(10),
+                                  child: CommentScreen());
+                            });
 
+                      },
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            "assets/comment.svg",
+                            semanticsLabel: 'Acme Logo',
+                            color: Colors.black,
+                            width: 30,
+                            height: 30,
+                          ),
+                          const SizedBox(width: 10,),
+                          Text("3",style: TextStyle(color: Colors.black),),
+                        ],
+                      ),
+                    ),
+
+                  ],
+                )
               ],
             )
-          ],
-        ),
       ),
     );
   }

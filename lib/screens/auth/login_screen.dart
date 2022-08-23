@@ -53,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
         builder: (context, state) {
           return Scaffold(
             key: scaffoldFormKeySingIn,
-            backgroundColor: HexColor("#191919"),
+            backgroundColor: HexColor("#f7b6b8"),
             /*appBar: AppBar(
               elevation: 0.0,
               backgroundColor: Colors.white,
@@ -116,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                           return null;
                         },
-                        style: TextStyle(color: Colors.grey[400]),
+                        style: TextStyle(color: Colors.white),
                         controller: emailController,
                         keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
@@ -125,14 +125,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(color: Colors.grey[400]!)
+                                borderSide: BorderSide(color: Colors.white)
                             ),
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 18.0),
                             label: Text("Email ID or Username",
-                              style: TextStyle(color: Colors.grey[500]),),
+                              style: TextStyle(color: Colors.white),),
                             prefixIcon: Icon(CupertinoIcons.mail_solid,
-                              color: Colors.grey[500],)),
+                              color: Colors.white,)),
 
                       ),
                       const SizedBox(
@@ -145,16 +145,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                           return null;
                         },
-                        style: TextStyle(color: Colors.grey[400]),
+                        style: TextStyle(color: Colors.white),
                         controller: passController,
                         decoration: InputDecoration(
                           label: Text("Password",
-                            style: TextStyle(color: Colors.grey[500]),),
+                            style: TextStyle(color: Colors.white),),
                           prefixIcon: Icon(CupertinoIcons.padlock_solid,
-                            color: Colors.grey[500],),
+                            color: Colors.white,),
                           enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.grey[400]!)
+                              borderSide: BorderSide(color: Colors.white)
                           ),
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10)
@@ -203,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           SizedBox(width: 5,),
                           Text("Keep me sign in",
-                            style: TextStyle(color: Colors.grey[300]),)
+                            style: TextStyle(color: Colors.white),)
                         ],
                       ),
                       const SizedBox(

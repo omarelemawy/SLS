@@ -24,7 +24,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor("#191919"),
+      backgroundColor: HexColor("#f7b6b8"),
 
       body: Column(
         children: [
@@ -45,18 +45,18 @@ class _NotificationScreenState extends State<NotificationScreen> {
                             route) => false);
                   },
                   child: const Icon(Icons.home_outlined,
-                      color: Colors.grey, size: 35)),
+                      color: Colors.white, size: 35)),
               const SizedBox(width: 20,),
               IconButton(
                   onPressed: () => Navigator.of(context)
                       .push(MaterialPageRoute(builder: (_) => const MySearchPage())),
-                  icon: const Icon(Icons.search,color: Colors.grey,size: 35,)),
+                  icon: const Icon(Icons.search,color: Colors.white,size: 35,)),
               const Spacer(),
               InkWell(
                   onTap:(){
                     Navigator.push(context, MaterialPageRoute(builder: (context)=>MessagesScreen()));
                   } ,
-                  child: const Icon(Icons.chat_outlined,color: Colors.grey,size: 35,)),
+                  child: const Icon(Icons.chat_outlined,color: Colors.white,size: 35,)),
               const SizedBox(width: 20,),
               InkWell(
                 onTap: () {
@@ -112,7 +112,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text("you have no any messages",style: TextStyle(color:
-              Colors.grey[500],fontSize: 12),),
+              Colors.white,fontSize: 12),),
 
             ],
           ),
@@ -121,7 +121,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
             height: MediaQuery.of(context).size.height/1.5,
             child: Center(
               child: Text("Nothing here",style:
-              TextStyle(color: Colors.grey[400],
+              TextStyle(color: Colors.white,
                   fontWeight: FontWeight.bold,fontSize: 25),),
             ),
           )

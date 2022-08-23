@@ -83,10 +83,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                           enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(color: Colors.grey[400]!)
+                              borderSide: BorderSide(color: Colors.white)
                           ),
                           contentPadding: EdgeInsets.symmetric(vertical: 18.0,horizontal: 10),
-                          label:  Text("Username",style: TextStyle(color:  Colors.grey[500]),),
+                          label:  Text("Username",style: TextStyle(color:  Colors.white),),
                           ),
 
                     ),
@@ -98,7 +98,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         }
                         return null;
                       },
-                      style: TextStyle(color: Colors.grey[400]) ,
+                      style: TextStyle(color: Colors.white) ,
                       keyboardType: TextInputType.emailAddress,
                       decoration:  InputDecoration(
                         border: OutlineInputBorder(
@@ -106,10 +106,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey[400]!)
+                            borderSide: BorderSide(color: Colors.white)
                         ),
                         contentPadding: EdgeInsets.symmetric(vertical: 18.0,horizontal: 10),
-                        label:  Text("FullName",style: TextStyle(color:  Colors.grey[500]),),
+                        label:  Text("FullName",style: TextStyle(color:  Colors.white),),
                       ),
 
                     ),
@@ -122,7 +122,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         }
                         return null;
                       },
-                      style: TextStyle(color: Colors.grey[400]) ,
+                      style: TextStyle(color: Colors.white) ,
                       keyboardType: TextInputType.emailAddress,
                       decoration:  InputDecoration(
                         border: OutlineInputBorder(
@@ -130,10 +130,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey[400]!)
+                            borderSide: BorderSide(color: Colors.white)
                         ),
                         contentPadding: EdgeInsets.symmetric(vertical: 18.0,horizontal: 10),
-                        label:  Text("Email",style: TextStyle(color:  Colors.grey[500]),),
+                        label:  Text("Email",style: TextStyle(color:  Colors.white),),
                       ),
 
                     ),
@@ -146,7 +146,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         }
                         return null;
                       },
-                      style: TextStyle(color: Colors.grey[400]) ,
+                      style: TextStyle(color: Colors.white) ,
                       keyboardType: TextInputType.emailAddress,
                       decoration:  InputDecoration(
                         border: OutlineInputBorder(
@@ -154,10 +154,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey[400]!)
+                            borderSide: BorderSide(color: Colors.white)
                         ),
                         contentPadding: EdgeInsets.symmetric(vertical: 18.0,horizontal: 10),
-                        label:  Text("Phone Number",style: TextStyle(color:  Colors.grey[500]),),
+                        label:  Text("Phone Number",style: TextStyle(color:  Colors.white),),
                       ),
 
                     ),
@@ -170,7 +170,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         }
                         return null;
                       },
-                      style: TextStyle(color: Colors.grey[400]) ,
+                      style: TextStyle(color: Colors.white) ,
                       keyboardType: TextInputType.emailAddress,
                       decoration:  InputDecoration(
                         border: OutlineInputBorder(
@@ -178,10 +178,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide(color: Colors.grey[400]!)
+                            borderSide: BorderSide(color: Colors.white)
                         ),
                         contentPadding: EdgeInsets.symmetric(vertical: 18.0,horizontal: 10),
-                        label:  Text("Date of birth",style: TextStyle(color:  Colors.grey[500]),),
+                        label:  Text("Date of birth",style: TextStyle(color:  Colors.white),),
                       ),
 
                     ),

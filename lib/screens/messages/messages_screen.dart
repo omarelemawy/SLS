@@ -25,7 +25,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor("#191919"),
+      backgroundColor: HexColor("#f7b6b8"),
 
       body: Column(
         children: [
@@ -46,19 +46,19 @@ class _MessagesScreenState extends State<MessagesScreen> {
                             route) => false);
                   },
                   child: const Icon(Icons.home_outlined,
-                      color: Colors.grey, size: 35)),
+                      color: Colors.white, size: 35)),
               const SizedBox(width: 20,),
               IconButton(
                   onPressed: () => Navigator.of(context)
                       .push(MaterialPageRoute(builder: (_) => const MySearchPage())),
-                  icon: const Icon(Icons.search,color: Colors.grey,size: 35,)),
+                  icon: const Icon(Icons.search,color: Colors.white,size: 35,)),
               const Spacer(),
               InkWell(
                   onTap: (){
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context)=>NotificationScreen()));
                   },
-                  child: const Icon(Icons.notifications_none,color: Colors.grey,size: 35,)),
+                  child: const Icon(Icons.notifications_none,color: Colors.white,size: 35,)),
               const SizedBox(width: 20,),
               InkWell(
                 onTap: () {
@@ -115,7 +115,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
             children: [
               SizedBox(width: MediaQuery.of(context).size.width/4,),
               Text("you have no any new messages",style: TextStyle(color:
-              Colors.grey[500],fontSize: 12),),
+              Colors.white,fontSize: 12),),
               const SizedBox(width: 25,),
               Text("Clean all",style: TextStyle(color:
               Colors.blue[500],fontSize: 12),),
@@ -182,12 +182,12 @@ Widget messagesCard(){
         ],
       ),
       const SizedBox(width: 30,),
-      Text("omacggv",style: TextStyle(color: Colors.grey[300],fontSize: 14,fontWeight: FontWeight.bold),),
+      Text("omacggv",style: TextStyle(color: Colors.white,fontSize: 14,fontWeight: FontWeight.bold),),
       const Spacer(),
       Column(
         children: [
-          Text("Jun 20,2022",style: TextStyle(color: Colors.grey[500],fontSize: 14),),
-          Text("هايهراه",style: TextStyle(color: Colors.grey[500],fontSize: 12),),
+          Text("Jun 20,2022",style: TextStyle(color: Colors.white,fontSize: 14),),
+          Text("هايهراه",style: TextStyle(color: Colors.white,fontSize: 12),),
         ],
       ),
       const SizedBox(width: 10,),

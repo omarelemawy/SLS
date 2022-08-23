@@ -48,7 +48,7 @@ class _AccountScreenState extends State<AccountScreen> {
         },
         builder: (context, state) {
           return Scaffold(
-              backgroundColor: HexColor("#191919"),
+              backgroundColor: HexColor("#f7b6b8"),
               body: FutureBuilder<UserModel?>(
                 future: readUser(),
                 builder: (context, AsyncSnapshot<UserModel?> snapshot) {
@@ -87,7 +87,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           SizedBox(height: 20,),
                           Text(snapshot.data!.name!, style: TextStyle(fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.grey[300]),),
+                              color: Colors.white),),
                           SizedBox(height: 20,),
                           Container(
                             color: Colors.blue,
@@ -107,13 +107,13 @@ class _AccountScreenState extends State<AccountScreen> {
                                     ListTile(
                                       leading: Icon(
                                         Icons.person_outline_sharp,
-                                        color: Colors.grey,),
+                                        color: Colors.white,),
                                       title: Text("My Profile", style:
                                       TextStyle(fontWeight: FontWeight.bold,
-                                          color: Colors.grey[300]),),
+                                          color: Colors.white),),
                                       trailing: Icon(
                                           Icons.arrow_forward_ios_sharp,
-                                          color: Colors.grey),
+                                          color: Colors.white),
                                       onTap: () {
                                         Navigator.push(
                                             context, MaterialPageRoute(
@@ -123,13 +123,13 @@ class _AccountScreenState extends State<AccountScreen> {
                                     ),
                                     ListTile(
                                       leading: Icon(
-                                        Icons.edit, color: Colors.grey,),
+                                        Icons.edit, color: Colors.white,),
                                       title: Text("Edit Profile", style:
                                       TextStyle(fontWeight: FontWeight.bold,
-                                          color: Colors.grey[300]),),
+                                          color: Colors.white),),
                                       trailing: Icon(
                                           Icons.arrow_forward_ios_sharp,
-                                          color: Colors.grey),
+                                          color: Colors.white),
                                       onTap: () {
                                         showModalBottomSheet(
                                             context: context,
@@ -164,13 +164,13 @@ class _AccountScreenState extends State<AccountScreen> {
                                       },
                                       leading: Icon(
                                         CupertinoIcons.map_pin_ellipse,
-                                        color: Colors.grey,),
+                                        color: Colors.white,),
                                       title: Text("Shipping Address", style:
                                       TextStyle(fontWeight: FontWeight.bold,
-                                          color: Colors.grey[300]),),
+                                          color: Colors.white),),
                                       trailing: Icon(
                                           Icons.arrow_forward_ios_sharp,
-                                          color: Colors.grey),
+                                          color: Colors.white),
                                     ),
                                     ListTile(
                                       onTap: () {
@@ -179,13 +179,13 @@ class _AccountScreenState extends State<AccountScreen> {
                                             (context) => MyOrdersScreen()));
                                       },
                                       leading: Icon(
-                                        Icons.card_travel, color: Colors.grey,),
+                                        Icons.card_travel, color: Colors.white,),
                                       title: Text("My Orders", style:
                                       TextStyle(fontWeight: FontWeight.bold,
-                                          color: Colors.grey[300]),),
+                                          color: Colors.white),),
                                       trailing: Icon(
                                           Icons.arrow_forward_ios_sharp,
-                                          color: Colors.grey),
+                                          color: Colors.white),
                                     ),
                                     ListTile(
                                       onTap: () {
@@ -195,14 +195,14 @@ class _AccountScreenState extends State<AccountScreen> {
                                                 NotificationsSettingsScreen()));
                                       },
                                       leading: Icon(Icons.notifications_none,
-                                        color: Colors.grey,),
+                                        color: Colors.white,),
                                       title: Text(
                                         "Notification Settings", style:
                                       TextStyle(fontWeight: FontWeight.bold,
-                                          color: Colors.grey[300]),),
+                                          color: Colors.white),),
                                       trailing: Icon(
                                           Icons.arrow_forward_ios_sharp,
-                                          color: Colors.grey),
+                                          color: Colors.white),
                                     ),
                                     ListTile(
                                       onTap: () {
@@ -212,13 +212,13 @@ class _AccountScreenState extends State<AccountScreen> {
                                                 CustomerSupportScreen()));
                                       },
                                       leading: Icon(Icons.support_agent,
-                                        color: Colors.grey,),
+                                        color: Colors.white,),
                                       title: Text("Customer Support", style:
                                       TextStyle(fontWeight: FontWeight.bold,
-                                          color: Colors.grey[300]),),
+                                          color: Colors.white),),
                                       trailing: Icon(
                                           Icons.arrow_forward_ios_sharp,
-                                          color: Colors.grey),
+                                          color: Colors.white),
                                     ),
                                     SizedBox(height: 10,),
                                     Row(

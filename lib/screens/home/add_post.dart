@@ -1,3 +1,8 @@
+import 'dart:async';
+import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hex_color/flutter_hex_color.dart';
@@ -13,6 +18,33 @@ class AddPost extends StatefulWidget {
 }
 
 class _AddPostState extends State<AddPost> {
+  TextEditingController quantityController=TextEditingController();
+  TextEditingController postController=TextEditingController();
+  TextEditingController priceController=TextEditingController();
+  final _fireStore=FirebaseFirestore.instance;
+  List<Uint8List>? photos;
+
+  final _auth=FirebaseAuth.instance;
+  late User signInUser;
+  @override
+  void initState() {
+    // TODO: implement initState
+    getCurrentUser();
+    super.initState();
+  }
+  void getCurrentUser() {
+
+    try{
+      final user=_auth.currentUser;
+      if(user!=null){
+        signInUser=user;
+      }
+
+    }catch(e){
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -21,7 +53,7 @@ class _AddPostState extends State<AddPost> {
         return dialog();
       },
       child: Scaffold(
-        backgroundColor: HexColor("#191919"),
+        backgroundColor: HexColor("#f7b6b8"),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -56,7 +88,29 @@ class _AddPostState extends State<AddPost> {
                     Spacer(),
                     CustomButton(
                           () {
-                         },
+                            DocumentReference doc = _fireStore.collection("Posts").doc();
+                            doc.set({
+                              "comments":1,
+                              "context":{
+                                "duration":"",
+                                "productPrice":priceController.text,
+                                "live":false,
+                                "images":[],
+                                "text":postController.text,
+
+                              },
+                              "id": doc.id,
+                              "likes":[],
+                              "postType":"TextPostWithShop",
+                              "shares":0,
+                              "time":DateTime.now(),
+                              "uid":signInUser.uid
+                            }).then((value) {
+                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:
+                                  (context)=>HomeScreen()
+                              ), (route) => false);
+                            });
+                          },
                       color: HexColor("#3593FF"),
                       height: 40,
                       width: 100,
@@ -77,15 +131,16 @@ class _AddPostState extends State<AddPost> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 20),
                 child: TextFormField(
-                  style: TextStyle(color: Colors.grey[200]),
+                  style: TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return "*Required";
                     }
                     return null;
                   },
+                  controller: postController,
                   decoration:  InputDecoration(
-                      label:  Text("Write something here..",style: TextStyle(color: Colors.grey),),
+                      label:  Text("Write something here..",style: TextStyle(color: Colors.white),),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
                         borderSide: BorderSide(color: Colors.blue),
@@ -111,9 +166,10 @@ class _AddPostState extends State<AddPost> {
                         return null;
                       },
                       keyboardType: TextInputType.number,
-                      style: TextStyle(color: Colors.grey[200]),
+                      controller: quantityController,
+                      style: TextStyle(color: Colors.white),
                       decoration:  InputDecoration(
-                          label:  Text("Quantity",style: TextStyle(color: Colors.grey),),
+                          label:  Text("Quantity",style: TextStyle(color: Colors.white),),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide(color: Colors.blue),
@@ -134,7 +190,7 @@ class _AddPostState extends State<AddPost> {
                   SizedBox(
                     width: 100,
                     child: TextFormField(
-                      style: TextStyle(color: Colors.grey[200]),
+                      style: TextStyle(color: Colors.white),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return "*Required";
@@ -142,9 +198,10 @@ class _AddPostState extends State<AddPost> {
                         return null;
                       },
                       keyboardType: TextInputType.number,
+                      controller: priceController,
                       decoration:  InputDecoration(
                           hintText:  "0",
-                          hintStyle: TextStyle(color: Colors.grey),
+                          hintStyle: TextStyle(color: Colors.white),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                             borderSide: BorderSide(color: Colors.blue),
@@ -167,7 +224,11 @@ class _AddPostState extends State<AddPost> {
                   SizedBox(width: 5,),
                   Icon(Icons.emoji_emotions_outlined,color: Colors.blue,size: 30,),
                   SizedBox(width: 5,),
-                  Icon(CupertinoIcons.photo_on_rectangle,color: Colors.blue,),
+                  InkWell(
+                      onTap: ()async{
+                      },
+                      child:
+                      Icon(CupertinoIcons.photo_on_rectangle,color: Colors.blue,)),
 
                 ],
               ),
@@ -184,7 +245,7 @@ class _AddPostState extends State<AddPost> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: HexColor("#323232"),
+          backgroundColor: HexColor("#f7b6b8").withOpacity(.8),
           title:Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -205,7 +266,7 @@ class _AddPostState extends State<AddPost> {
                 Text("Are you sure you want discard this post",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.grey[600],
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),),
               ],

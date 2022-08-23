@@ -43,7 +43,7 @@ class _FirstRegisterScreenState extends State<FirstRegisterScreen> {
   },
   builder: (context, state) {
     return Scaffold(
-      backgroundColor: HexColor("#191919"),
+      backgroundColor: HexColor("#f7b6b8"),
       body: Padding(
         padding: const EdgeInsets.only(top: 10.0, right: 30, left: 30),
         child: SingleChildScrollView(

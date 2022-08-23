@@ -12,7 +12,7 @@ class FirstScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor("#191919"),
+      backgroundColor: HexColor("#f7b6b8"),
       body: SingleChildScrollView(
         child: Column(
           children: [

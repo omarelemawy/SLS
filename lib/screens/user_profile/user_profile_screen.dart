@@ -43,21 +43,21 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:HexColor("#191919"),
+      backgroundColor:HexColor("#f7b6b8"),
       appBar: AppBar(
         elevation: 0,
-        backgroundColor:HexColor("#191919"),
+        backgroundColor:HexColor("#f7b6b8"),
         leading: InkWell(
           onTap: (){
             Navigator.pushAndRemoveUntil(context,
                 MaterialPageRoute(builder: (context)=>const HomeScreen()), (route) => false);
           },
             child: const Icon(Icons.home_outlined,
-                color: Colors.grey,size: 35)),
+                color: Colors.white,size: 35)),
         title: IconButton(
             onPressed: () => Navigator.of(context)
                 .push(MaterialPageRoute(builder: (_) => const MySearchPage())),
-            icon: const Icon(Icons.search,color: Colors.grey,size: 35,)),
+            icon: const Icon(Icons.search,color: Colors.white,size: 35,)),
         actions: [
           InkWell(
               onTap: (){
@@ -79,20 +79,20 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
                           child: MyCartScreen());
                     });
               },
-              child: const Icon(Icons.shopping_cart_rounded,color: Colors.grey,size: 35,)),
+              child: const Icon(Icons.shopping_cart_rounded,color: Colors.white,size: 35,)),
           const SizedBox(width: 10,),
           InkWell(
               onTap:(){
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>MessagesScreen()));
               } ,
-              child: const Icon(Icons.chat_outlined,color: Colors.grey,size: 35,)),
+              child: const Icon(Icons.chat_outlined,color: Colors.white,size: 35,)),
           const SizedBox(width: 10,),
           InkWell(
               onTap: (){
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context)=>NotificationScreen()));
               },
-              child: const Icon(Icons.notifications_none,color: Colors.grey,size: 35,)),
+              child: const Icon(Icons.notifications_none,color: Colors.white,size: 35,)),
           InkWell(
             onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (context)=>AccountScreen()));
@@ -142,7 +142,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
 
             Expanded(
               child: Scaffold(
-                backgroundColor:HexColor("#191919"),
+                backgroundColor:HexColor("#f7b6b8"),
                 body: DefaultTabController(
                   length: 2,
                   child: Stack(
@@ -155,7 +155,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
                                 delegate: SliverChildListDelegate(
                                      <Widget>[
                                       Container(
-                                        color: HexColor("#191919"),
+                                        color: HexColor("#f7b6b8"),
                                         child: Column(
                                         children: [
                                           const SizedBox(height: 15,),
@@ -166,27 +166,27 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
                                           ),
                                           const SizedBox(height: 15,),
                                            Text("Nacer Bounfws",style:
-                                          TextStyle(color: Colors.grey[300],fontWeight: FontWeight.bold,fontSize: 14),),
+                                          TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 14),),
                                           const SizedBox(height: 20,),
                                           Row(
                                             crossAxisAlignment: CrossAxisAlignment.center,
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               const Text("Followers ",style: TextStyle(
-                                                  color: Colors.grey
+                                                  color: Colors.white
                                               ),),
-                                               Text(" 8",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey[400]),),
+                                               Text(" 8",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
                                               const SizedBox(width: 40,),
                                               Container(
-                                                color: Colors.grey,
+                                                color: Colors.white,
                                                 width: 1,
                                                 height: 15,
                                               ),
                                               const SizedBox(width: 40,),
                                               const Text("Followings ",style: TextStyle(
-                                                  color: Colors.grey
+                                                  color: Colors.white
                                               ),),
-                                               Text(" 6",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey[400]),),
+                                               Text(" 6",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
                                             ],
                                           ),
                                           const SizedBox(height: 20,),
@@ -214,11 +214,11 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
                                               Container(
                                                 padding: EdgeInsets.symmetric(vertical: 2,horizontal: 40),
                                                 decoration: BoxDecoration(
-                                                  border: Border.all(color: Colors.blue[700]!,width: 1.5),
+                                                  border: Border.all(color: Colors.white,width: 1.5),
                                                   borderRadius: BorderRadius.circular(20),
 
                                                 ),
-                                                child:Icon(Icons.mail_outline, color:Colors.grey[700],size: 20,),
+                                                child:Icon(Icons.mail_outline, color:Colors.white,size: 20,),
                                               ),
 
                                             ],
@@ -234,7 +234,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
                               pinned: false,
                               stretch: true,
                               expandedHeight: 0,
-                              backgroundColor:HexColor("#191919"),
+                              backgroundColor:HexColor("#f7b6b8"),
                               bottom: PreferredSize(
                                 preferredSize: Size.fromHeight(5.0),
                                 child: TabBar(
@@ -244,8 +244,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
                                         "Feeds",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(color:  _tabController!.index == 1
-                                            ? Colors.pinkAccent
-                                            : Colors.grey),
+                                            ? Colors.black
+                                            : Colors.white),
                                       ),
                                     ),
                                     Tab(
@@ -254,8 +254,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
                                         textAlign: TextAlign.center,
                                         style: TextStyle(color:
                                         _tabController!.index == 0
-                                            ? Colors.pinkAccent
-                                            : Colors.grey),
+                                            ? Colors.black
+                                            : Colors.white),
                                       ),
                                     ),
                                   ],
@@ -263,10 +263,10 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
                                     setState((){});
                                   },
                                   controller: _tabController,
-                                  unselectedLabelStyle: TextStyle(color: Colors.pinkAccent),
-                                  unselectedLabelColor: Colors.pinkAccent,
-                                  labelColor: Colors.pinkAccent,
-                                  indicatorColor: Colors.pinkAccent,
+                                  unselectedLabelStyle: TextStyle(color: Colors.black),
+                                  unselectedLabelColor: Colors.black,
+                                  labelColor: Colors.black,
+                                  indicatorColor: Colors.black,
                                 ),
                               ),
                             ),
@@ -295,6 +295,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
                                 padding: const EdgeInsets.all(8.0),
                                 child: ListView.separated(itemBuilder:
                                     (context,index){
+
                                   return StreamField();
                                 },
                                   itemCount: 12, separatorBuilder:

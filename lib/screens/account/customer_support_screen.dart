@@ -50,11 +50,11 @@ class _CustomerSupportScreenState extends State<CustomerSupportScreen> {
                   children: [
                     Text("Call us in:",style: TextStyle(color: Colors.blue[900],fontSize: 16),),
                     SizedBox(height: 5,),
-                    Text("+49 172 5446185",style: TextStyle(color: Colors.grey[600],fontWeight: FontWeight.w300,fontSize: 13),),
+                    Text("+49 172 5446185",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 14),),
                     SizedBox(height: 15,),
                     Text("Email us in:",style: TextStyle(color: Colors.blue[900],fontSize: 18),),
                     SizedBox(height: 5,),
-                    Text("Support@sls.com",style: TextStyle(color: Colors.grey[600],fontWeight: FontWeight.w300,fontSize: 13),),
+                    Text("Support@sls.com",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w500,fontSize: 14),),
                   ],
                 ),
               ),
