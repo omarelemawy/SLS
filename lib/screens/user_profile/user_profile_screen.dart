@@ -1,19 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hex_color/flutter_hex_color.dart';
-import 'package:search_page/search_page.dart';
-import 'package:sls/screens/home/home_screen.dart';
-
+import 'package:sls/screens/searchpage.dart';
 import '../../contance.dart';
 import '../account/account_screen.dart';
 import '../feeds/feeds_screen.dart';
+import '../home/add_post.dart';
+
+import '../home/home_screen.dart';
 import '../messages/messages_screen.dart';
 import '../my_cart/my_cart_screen.dart';
 import '../notification/notification_screen.dart';
 import '../streams/streams_field.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  const UserProfileScreen({Key? key}) : super(key: key);
+  String name,id;
+  int count;
+
+   UserProfileScreen({ this.name="",this.id="",this.count=1}) ;
 
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
@@ -27,9 +33,11 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
     Person('Anthony', 'Johnson', 67),
     Person('Annette', 'Brooks', 39),
   ];
+  final _fireStore = FirebaseFirestore.instance;
+
   int index=0;
   TabController? _tabController;
-
+  User? loggeduser;
   @override
   void initState() {
     super.initState();
@@ -40,6 +48,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
     setState(() {
     });
   }
+
+  String usrid="";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +66,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
                 color: Colors.white,size: 35)),
         title: IconButton(
             onPressed: () => Navigator.of(context)
-                .push(MaterialPageRoute(builder: (_) => const MySearchPage())),
+                .push(MaterialPageRoute(builder: (_) => MySearchPage())),
             icon: const Icon(Icons.search,color: Colors.white,size: 35,)),
         actions: [
           InkWell(
@@ -138,8 +148,6 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-
-
             Expanded(
               child: Scaffold(
                 backgroundColor:HexColor("#f7b6b8"),
@@ -165,7 +173,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
                                             radius: 35,
                                           ),
                                           const SizedBox(height: 15,),
-                                           Text("Nacer Bounfws",style:
+                                           Text('${widget.name}',style:
                                           TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 14),),
                                           const SizedBox(height: 20,),
                                           Row(
@@ -211,16 +219,56 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
                                                 ),
                                               ),
                                               SizedBox(width: 20,),
-                                              Container(
-                                                padding: EdgeInsets.symmetric(vertical: 2,horizontal: 40),
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(color: Colors.white,width: 1.5),
-                                                  borderRadius: BorderRadius.circular(20),
+                                              GestureDetector(
+                                                onTap:(){
 
+                                                  CollectionReference users=FirebaseFirestore.instance.collection("ChatListUsers");
+                                                 _fireStore.collection("Users").get().then((value)=>{
+                                                   value.docs.forEach((element) {usrid=element.data()["uId"];})});
+//*******************************
+                                                  Future<bool> docExists =  ( checkIfDocExists(widget.id)) as Future<bool>  ;
+                                                  print("Document exists in Firestore? " + docExists.toString());
+
+
+                                                  //***************************
+                                                  users.where(widget.id,isNotEqualTo:loggeduser?.uid).where("uId",isEqualTo:usrid).limit(3)
+                                                      .get().then((QuerySnapshot querysnapshot)
+                                                  {
+                                                      if(docExists==false){
+
+                                                     // widget.count++;
+                                                      users.add({
+                                                        "uid":usrid,
+                                                        'name':widget.name,
+                                                        'id':widget.id,
+                                                        "status":"available"
+                                                      }).then((value) {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (context) =>
+                                                                    MessagesScreen(name: widget.name,id:widget.id)));
+                                                      });
+                                                    }
+                                                  });
+
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            MessagesScreen()));
+
+                                                  },
+                                                child: Container(
+                                                  padding: EdgeInsets.symmetric(vertical: 2,horizontal: 40),
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(color: Colors.white,width: 1.5),
+                                                    borderRadius: BorderRadius.circular(20),
+
+                                                  ),
+                                                  child:Icon(Icons.mail_outline, color:Colors.green,size: 20,),
                                                 ),
-                                                child:Icon(Icons.mail_outline, color:Colors.white,size: 20,),
                                               ),
-
                                             ],
                                           ),
                                         ],
@@ -278,16 +326,18 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
                             Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: ListView.separated(itemBuilder:
-                                    (context,index){
-                                  return FeedsScreen();
-                                },
-                                  itemCount: 12, separatorBuilder:
-                                      (BuildContext context, int index) {
-                                    return SizedBox(height:10,);
-                                  },
+                                child: FeedsScreen(),
 
-                                ),
+                                // ListView.separated(itemBuilder:
+                                //     (context,index){
+                                //   return FeedsScreen();
+                                // },
+                                //   itemCount: 12, separatorBuilder:
+                                //       (BuildContext context, int index) {
+                                //     return SizedBox(height:10,);
+                                //   },
+                                //
+                                // ),
                               ),
                             ),
                             Center(
@@ -320,6 +370,18 @@ class _UserProfileScreenState extends State<UserProfileScreen>with SingleTickerP
         ),
       ),
     );
+  }
+  /// Check If Document Exists
+  Future<bool> checkIfDocExists(String docId) async {
+    try {
+      // Get reference to Firestore collection
+      var collectionRef =FirebaseFirestore.instance.collection("ChatListUsers");
+
+      var doc = await collectionRef.doc(docId).get();
+      return doc.exists;
+    } catch (e) {
+      throw e;
+    }
   }
 }
 class Person {

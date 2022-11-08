@@ -165,8 +165,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-
-
                       const SizedBox(
                         height: 30,
                       ),
@@ -248,7 +246,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-
                            state is RegisterWithGoogleLoadingState?
                            CircularProgressIndicator():
                             InkWell(

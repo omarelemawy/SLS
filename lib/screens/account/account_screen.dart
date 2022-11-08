@@ -37,7 +37,7 @@ class _AccountScreenState extends State<AccountScreen> {
       if (snapshot.exists) {
         return UserModel.fromJson(snapshot.data());
       } else {
-        return UserModel();
+        return UserModel(name: '');
       }
     }
     return BlocProvider(

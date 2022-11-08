@@ -29,8 +29,8 @@ class _ChatScreenState extends State<ChatScreen> {
   String? messageText;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
   }
   Future<UserModel> readUser() async {
     final docUser = FirebaseFirestore.instance.collection("Users").doc(
@@ -39,7 +39,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (snapshot.exists) {
       return UserModel.fromJson(snapshot.data());
     } else {
-      return UserModel();
+      return UserModel(name: '');
     }
   }
   ScrollController _scrollController = ScrollController();
@@ -224,8 +224,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         const SizedBox(width: 20,),
                       ],
                     ),
-
-
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
@@ -238,7 +236,6 @@ class _ChatScreenState extends State<ChatScreen> {
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
                                 decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
-
                                 ),
                                 child:Image.network(
                                   snapshot.data!.photo!

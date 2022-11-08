@@ -35,7 +35,7 @@ class _StreamFieldState extends State<StreamField> {
                     onTap: (){
                       Navigator.push(context,
                           MaterialPageRoute(builder:
-                              (context)=>const UserProfileScreen()));
+                              (context)=> UserProfileScreen()));
                     },
                     child: Row(
                       children: [

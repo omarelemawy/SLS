@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hex_color/flutter_hex_color.dart';
 import 'package:search_page/search_page.dart';
-import 'package:sls/screens/home/home_screen.dart';
+import 'package:sls/screens/searchpage.dart';
 
 import '../account/account_screen.dart';
+
+import '../home/home_screen.dart';
 import '../messages/messages_screen.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -41,7 +43,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               InkWell(
                   onTap: () {
                     Navigator.pushAndRemoveUntil(context,
-                        MaterialPageRoute(builder: (context) => const HomeScreen()), (
+                        MaterialPageRoute(builder: (context) =>  HomeScreen()), (
                             route) => false);
                   },
                   child: const Icon(Icons.home_outlined,
@@ -49,7 +51,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               const SizedBox(width: 20,),
               IconButton(
                   onPressed: () => Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => const MySearchPage())),
+                      .push(MaterialPageRoute(builder: (_) =>  MySearchPage())),
                   icon: const Icon(Icons.search,color: Colors.white,size: 35,)),
               const Spacer(),
               InkWell(

@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hex_color/flutter_hex_color.dart';
-import 'package:sls/screens/home/home_screen.dart';
-
+import 'package:sls/screens/searchpage.dart';
 import '../../contance.dart';
 import '../../model/user_model.dart';
 import '../../shared/netWork/local/cache_helper.dart';
 import '../account/account_screen.dart';
 import '../feeds/feeds_screen.dart';
+import '../home/home_screen.dart';
 import '../messages/messages_screen.dart';
 import '../my_cart/my_cart_screen.dart';
 import '../notification/notification_screen.dart';
@@ -51,7 +51,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>with SingleTickerProvi
       if (snapshot.exists) {
         return UserModel.fromJson(snapshot.data());
       } else {
-        return UserModel();
+        return UserModel(name: '');
       }
     }
     return Scaffold(
@@ -62,13 +62,13 @@ class _MyProfileScreenState extends State<MyProfileScreen>with SingleTickerProvi
         leading: InkWell(
             onTap: (){
               Navigator.pushAndRemoveUntil(context,
-                  MaterialPageRoute(builder: (context)=>const HomeScreen()), (route) => false);
+                  MaterialPageRoute(builder: (context)=>HomeScreen()), (route) => false);
             },
             child: const Icon(Icons.home_outlined,
               color: Colors.white,size: 35)),
         title: IconButton(
             onPressed: () => Navigator.of(context)
-                .push(MaterialPageRoute(builder: (_) => const MySearchPage())),
+                .push(MaterialPageRoute(builder: (_) =>  MySearchPage())),
             icon: const Icon(Icons.search,color: Colors.white,size: 35,)),
         actions: [
           InkWell(

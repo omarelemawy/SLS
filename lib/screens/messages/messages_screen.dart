@@ -1,27 +1,26 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hex_color/flutter_hex_color.dart';
 import 'package:search_page/search_page.dart';
 import 'package:sls/screens/chat/chat_screen.dart';
-import 'package:sls/screens/home/home_screen.dart';
-
+import 'package:sls/screens/searchpage.dart';
 import '../account/account_screen.dart';
+import '../chat/chatt.dart';
+
+import '../home/home_screen.dart';
 import '../notification/notification_screen.dart';
 
 class MessagesScreen extends StatefulWidget {
-  const MessagesScreen({Key? key}) : super(key: key);
+  String name,id;
+  int count;
+   MessagesScreen({this.count=0,this.id="",this.name=""}) ;
 
   @override
   State<MessagesScreen> createState() => _MessagesScreenState();
 }
 
 class _MessagesScreenState extends State<MessagesScreen> {
-/*  static List<Person> people = [
-    Person('Mike', 'Barron', 64),
-    Person('Todd', 'Black', 30),
-    Person('Ahmad', 'Edwards', 55),
-    Person('Anthony', 'Johnson', 67),
-    Person('Annette', 'Brooks', 39),
-  ];*/
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +49,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
               const SizedBox(width: 20,),
               IconButton(
                   onPressed: () => Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => const MySearchPage())),
+                      .push(MaterialPageRoute(builder: (_) =>  MySearchPage())),
                   icon: const Icon(Icons.search,color: Colors.white,size: 35,)),
               const Spacer(),
               InkWell(
@@ -77,6 +76,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
                         ),
                         child: Image.network(
+
                           "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png"
                           , errorBuilder: (c, d, s) {
                           return Container(
@@ -123,30 +123,41 @@ class _MessagesScreenState extends State<MessagesScreen> {
           ),
           const SizedBox(height: 30,),
           Expanded(
+            //firestore.collection("Users").get().then((value)=>{value.docs.forEach((element) {
             child: Padding(
               padding: const EdgeInsets.all(15.0),
-              child: ListView.separated(itemBuilder: (context,index){
-                return InkWell(
-                   onTap: (){
-                     Navigator.push(context, MaterialPageRoute(builder: (context)=>ChatScreen()));
-                   },
-                    child: messagesCard());
-              }, separatorBuilder: (context,index){
-                return Container(
-                  height: .5,width:
-                MediaQuery.of(context).size.width-20,
-                  color: Colors.grey[400],
-                  margin: const EdgeInsets.symmetric(vertical: 20),
-                );
-              }, itemCount: 4),
+              child:StreamBuilder(
+                stream:  FirebaseFirestore.instance.collection("ChatListUsers").snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  if (!snapshot.hasData) {
+                    return CircularProgressIndicator();
+                  }
+                return ListView.separated(
+                    itemBuilder: (context,index){
+                  return InkWell(
+                     onTap: (){
+                       Navigator.push(context, MaterialPageRoute(builder: (context)=>Chat()));
+                     },
+                      child: messagesCard(snapshot.data.docs[index]["name"]));
+                },separatorBuilder: (context,index){
+                  return Container(
+                    height: 1,width:
+                  MediaQuery.of(context).size.width-20,
+                    color: Colors.grey[400],
+                    margin: const EdgeInsets.symmetric(vertical: 20),
+                  );
+
+                }, itemCount: snapshot.data!.docs.length);},
+              ),
             ),
           )
         ],
       ),
     );
+
   }
 }
-Widget messagesCard(){
+Widget messagesCard(String namee){
   return  Row(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -182,7 +193,7 @@ Widget messagesCard(){
         ],
       ),
       const SizedBox(width: 30,),
-      Text("omacggv",style: TextStyle(color: Colors.white,fontSize: 14,fontWeight: FontWeight.bold),),
+      Text(namee,style: TextStyle(color: Colors.white,fontSize: 14,fontWeight: FontWeight.bold),),
       const Spacer(),
       Column(
         children: [

@@ -11,7 +11,7 @@ class UserModel{
   String? photo;
   bool? isEmailVerification;
 
-  UserModel({this.name, this.email, this.phone, this.uId, this.photo,this.isEmailVerification});
+  UserModel({required this.name, this.email, this.phone, this.uId, this.photo,this.isEmailVerification});
 
   UserModel.fromJson(Map<String,dynamic>? json){
     name=json!["userName"];

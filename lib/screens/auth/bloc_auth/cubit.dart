@@ -136,11 +136,15 @@ class RegisterCubit extends Cubit<RegisterStates> {
 
   void signInWithFace(context,UserCredential? _currentUser){
     emit(RegisterWithFacebookLoadingState());
-    UserModel userModel = UserModel(photo: _currentUser!.user!.providerData[0].photoURL,
-      email:  _currentUser.user!.providerData[0].email,
-      name:  _currentUser.user!.providerData[0].displayName,
-      uId:  _currentUser.user!.providerData[0].uid,
-      isEmailVerification: false,);
+    UserModel userModel = UserModel(
+      photo: _currentUser!.user!.providerData[0].photoURL ,
+      email: _currentUser.user!.providerData[0].email ,
+      name:  _currentUser.user!.providerData[0].displayName ,
+      uId:   _currentUser.user!.providerData[0].uid,
+      isEmailVerification: false,
+
+    );
+
     FirebaseFirestore.instance.collection('Users').doc( _currentUser.user!.providerData[0].uid).set(
         userModel.toMap()).then((value) {
       CacheHelper.saveData(key: 'uId', value:  _currentUser.user!.providerData[0].uid);

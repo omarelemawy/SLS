@@ -29,10 +29,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final ImagePicker _picker = ImagePicker();
     // Pick an image
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-
     if(image != null) {
       _file = File(image.path);
-    } else {
+    } else
+    {
     }
 
   }
