@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "547261913838",
+    "project_id": "sls2-c2301",
+    "storage_bucket": "sls2-c2301.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547261913838:android:bda4abee2b4becf23d71ff",
+        "android_client_info": {
+          "package_name": "com.example.sls"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "547261913838-7enk58hltklf50jebo06g62v0co990tc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwUHemdfFI0PW9T6LGgRfZL3N0NmGc_zI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "547261913838-7enk58hltklf50jebo06g62v0co990tc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
