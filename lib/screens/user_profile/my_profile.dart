@@ -2,20 +2,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hex_color/flutter_hex_color.dart';
-import 'package:sls/screens/home/home_screen.dart';
-
+import 'package:sls/screens/searchpage.dart';
 import '../../contance.dart';
 import '../../model/user_model.dart';
 import '../../shared/netWork/local/cache_helper.dart';
 import '../account/account_screen.dart';
 import '../feeds/feeds_screen.dart';
+import '../home/home_screen.dart';
 import '../messages/messages_screen.dart';
 import '../my_cart/my_cart_screen.dart';
 import '../notification/notification_screen.dart';
 import '../streams/streams_field.dart';
 
 class MyProfileScreen extends StatefulWidget {
-  const MyProfileScreen({Key? key}) : super(key: key);
+  // UserModel? user;
+  // MyProfileScreen({required this.user}) ;
 
   @override
   State<MyProfileScreen> createState() => _MyProfileScreenState();
@@ -44,16 +45,22 @@ class _MyProfileScreenState extends State<MyProfileScreen>with SingleTickerProvi
   }
   @override
   Widget build(BuildContext context) {
-    Future<UserModel> readUser() async {
-      final docUser = FirebaseFirestore.instance.collection("Users").doc(
-          CacheHelper.getData(key: "uId"));
+
+    UserModel? userr;
+    Future<UserModel?> readUser() async {
+      final docUser = FirebaseFirestore.instance
+          .collection("Users")
+          .doc(CacheHelper.getData(key: "uId"));
       final snapshot = await docUser.get();
+
       if (snapshot.exists) {
-        return UserModel.fromJson(snapshot.data());
+        userr = UserModel.fromJson(snapshot.data());
+        return userr;
       } else {
-        return UserModel();
+        return UserModel(name: '');
       }
     }
+
     return Scaffold(
       backgroundColor:HexColor("#f7b6b8"),
       appBar: AppBar(
@@ -62,13 +69,13 @@ class _MyProfileScreenState extends State<MyProfileScreen>with SingleTickerProvi
         leading: InkWell(
             onTap: (){
               Navigator.pushAndRemoveUntil(context,
-                  MaterialPageRoute(builder: (context)=>const HomeScreen()), (route) => false);
+                  MaterialPageRoute(builder: (context)=>HomeScreen()), (route) => false);
             },
             child: const Icon(Icons.home_outlined,
               color: Colors.white,size: 35)),
         title: IconButton(
             onPressed: () => Navigator.of(context)
-                .push(MaterialPageRoute(builder: (_) => const MySearchPage())),
+                .push(MaterialPageRoute(builder: (_) =>  MySearchPage())),
             icon: const Icon(Icons.search,color: Colors.white,size: 35,)),
         actions: [
           InkWell(
@@ -125,7 +132,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>with SingleTickerProvi
 
                             ),
                             child: Image.network(
-                              snapshot.data!.photo!,                                errorBuilder: (c, d, s) {
+                             "",errorBuilder: (c, d, s) {
                               return Container(
                                 height: 30,
                                 width: 30,
@@ -317,7 +324,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>with SingleTickerProvi
                                 padding: const EdgeInsets.all(8.0),
                                 child: ListView.separated(itemBuilder:
                                     (context,index){
-                                  return FeedsScreen();
+                                  return FeedsScreen(userr??UserModel(),);
                                 },
                                   itemCount: 12, separatorBuilder:
                                       (BuildContext context, int index) {

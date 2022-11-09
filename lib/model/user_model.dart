@@ -1,6 +1,6 @@
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
 import '../shared/netWork/local/cache_helper.dart';
 
 class UserModel{
@@ -9,9 +9,15 @@ class UserModel{
   String? phone;
   String? uId;
   String? photo;
-  bool? isEmailVerification;
+  String ? confirmState;
+  String? role;
+  //List <String>?followers;
+  //List <String>?following;
+  //List <String>?hiddenPosts;
+  //List <String>?liveNotificationsBlackList;
 
-  UserModel({this.name, this.email, this.phone, this.uId, this.photo,this.isEmailVerification});
+  UserModel({this.name, this.email, this.phone, this.uId, this.photo,this.confirmState,this.role,
+   });
 
   UserModel.fromJson(Map<String,dynamic>? json){
     name=json!["userName"];
@@ -19,16 +25,47 @@ class UserModel{
     phone=json["phone"];
     uId=json["uId"];
     photo=json["profileImg"];
-    isEmailVerification=json["isEmailVerification"];
+    confirmState=json["confirmState"];
+    role=json["role"];
+
+    //if (json['followers'] != null) {
+      //followers= [];
+    // }
+    // else{
+    //   followers =  [];
+    // }
+  //  if (json['following'] != null) {
+    //  following= [];
+    // }
+    // else{
+    //   following =  [];
+    // }
+    // if (json['hiddenPosts'] != null) {
+    //   hiddenPosts= json['hiddenPosts'];
+    // }
+    // else{
+     // hiddenPosts =  [];
+    //}
+   // if (json['liveNotificationsBlackList'] != null) {
+   //   liveNotificationsBlackList= [];
+    // }
+    // else{
+    //   liveNotificationsBlackList =  [];
+    // }
   }
   Map<String,dynamic> toMap(){
-   return {
-     "userName":name,
-     "email":email,
-     "uId":uId,
-     "profileImg":photo,
-     "isEmailVerification":isEmailVerification,
-   };
+    return {
+      "userName":name,
+      "email":email,
+      "uId":uId,
+      "profileImg":photo,
+      "confirmState":confirmState,
+      "role":role,
+      //"followers":followers,
+      //"following":following,
+      //"hiddenPosts":hiddenPosts,
+      //"liveNotificationsBlackList":liveNotificationsBlackList,
+    };
   }
 }
 
@@ -40,20 +77,29 @@ class PostModel {
   String? postType;
   String? time;
   String? uid;
-
+  int? shares;
+  String? userName;
+  String? email;
+  String? profile;
   PostModel({
     this.comments,
     this.context,
     this.likes,
+    this.userName,
+    this.profile,
+    this.email,
     this.postType,
     this.time,
     this.uid,
-    this.id});
+    this.id,this.shares});
 
   PostModel.fromJson(Map<String,dynamic>? json){
     comments=json!["comments"];
     context=json["context"];
-
+    userName=json["userName"];
+    email=json["email"];
+    profile=json["profile"];
+    shares=json["shares"];
     if (json['likes'] != null) {
       likes=json["likes"];
     }
@@ -67,23 +113,23 @@ class PostModel {
     uid=json["uid"];
   }
   Map<String,dynamic> toMap(){
-   return {
-     "comments":comments,
-     "email":context,
-     "id":id,
-     "postType":postType,
-     "likes":likes,
-     "time":time,
-     "uid":uid,
-
-   };
+    return {
+      "comments":comments,
+      "email":context,
+      "id":id,
+      "postType":postType,
+      "likes":likes,
+      "time":time,
+      "uid":uid,
+"shares":shares
+    };
   }
 }
 
 class Context {
   String? duration;
   List<String>? images;
-  String? live;
+  bool? live;
   String? productPrice;
   String? text;
   String? video;
@@ -128,7 +174,6 @@ class Context {
   }
 }
 
-
 class Message {
   String? message;
   List<String>? messageImage;
@@ -140,10 +185,10 @@ class Message {
 
   factory Message.fromMap(QueryDocumentSnapshot map) {
     return Message(
-        seen: map["seen"],
-        time: timeago.format(map["time"].toDate()),
-        message: map["messageText"],
-        messageImage: map["messageImage"],
+      seen: map["seen"],
+      time: timeago.format(map["time"].toDate()),
+      message: map["messageText"],
+      messageImage: map["messageImage"],
     );
   }
 
@@ -158,3 +203,94 @@ class Message {
     };
   }
 }
+class Notifications{
+   String? data;
+   bool? seen;
+   String? topic;
+   String? time;
+  relatedinfo? relatedinfoo;
+  senderInfo? senderInfoo;
+List<String>?targetusers;
+  Notifications({this.data, this.seen, this.topic, this.time, this.relatedinfoo, this.senderInfoo, this.targetusers});
+
+   Notifications.fromJson(Map<String, dynamic> json) {
+
+      data= json["data"];
+      seen=json["seen"].toLowerCase();
+      topic= json["topic"];
+      time= json["time"];
+      relatedinfoo= relatedinfo.fromJson(json["relatedinfoo"]);
+      senderInfoo= senderInfo.fromJson(json["senderInfoo"]);
+        if (json['targetusers'] != null) {
+      targetusers= json['targetusers'];
+    }
+    else{
+    targetusers =  [];
+    }
+
+  }
+
+   Map<String, dynamic> toJson() {
+    return {
+      "data": this.data,
+      "seen": this.seen,
+      "topic": this.topic,
+      "time": this.time,
+      "relatedinfoo": this.relatedinfoo,
+      "senderInfoo": this.senderInfoo,
+      "targetusers": this.targetusers,
+    };
+  }
+//
+
+}
+class relatedinfo{
+  final String orderNo;
+  final String postId;
+
+  relatedinfo({required this.orderNo,required this.postId});
+
+  factory relatedinfo.fromJson(Map<String, dynamic> json) {
+    return relatedinfo(
+      orderNo: json["orderNo"],
+      postId: json["postId"],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "orderNo": this.orderNo,
+      "postId": this.postId,
+    };
+  }
+
+//
+
+}
+
+class senderInfo{
+  final String uid;
+  final String userName;
+  final String userImg;
+
+  senderInfo({required this.uid,required this.userName,required this.userImg});
+
+  factory senderInfo.fromJson(Map<String, dynamic> json) {
+    return senderInfo(
+      uid: json["uid"],
+      userName: json["userName"],
+      userImg: json["userImg"],
+
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "uid": this.uid,
+      "userName": this.userName,
+      "userImg": this.userImg,
+    };
+  }
+}
+
+

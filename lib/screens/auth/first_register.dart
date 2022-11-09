@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_hex_color/flutter_hex_color.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sls/model/user_model.dart';
 import 'package:sls/screens/auth/bloc_auth/cubit.dart';
 import 'package:sls/screens/auth/bloc_auth/states.dart';
 import 'package:sls/screens/auth/register_screen.dart';
@@ -12,7 +13,8 @@ import '../widget/custom_text.dart';
 import 'login_screen.dart';
 
 class FirstRegisterScreen extends StatefulWidget {
-  const FirstRegisterScreen({Key? key}) : super(key: key);
+  //UserModel usermodel;
+  //FirstRegisterScreen({required this.usermodel}) ;
 
   @override
   State<FirstRegisterScreen> createState() => _FirstRegisterScreenState();
@@ -108,7 +110,7 @@ class _FirstRegisterScreenState extends State<FirstRegisterScreen> {
                           .signInWithCredential(credential).then((value) {
                         print("Facebook Data with Credentials -> ${value.user!.providerData[0]}");
 
-                        RegisterCubit.get(context).signInWithFace(context,value);
+                      //  RegisterCubit.get(context).signInWithFace(context,value);
                       });
                     }
 

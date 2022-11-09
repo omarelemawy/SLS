@@ -14,6 +14,11 @@ class LoginErrorState extends RegisterStates{
   String error;
   LoginErrorState(this.error);
 }
+class CreatewaitingUserSuccessState extends RegisterStates{}
+class CreatewaitingUserErrorState extends RegisterStates{
+  String error;
+  CreatewaitingUserErrorState(this.error);
+}
 class CreateUserSuccessState extends RegisterStates{}
 class RegisterGetImageState extends RegisterStates{}
 class CreateUserErrorState extends RegisterStates{
