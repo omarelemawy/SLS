@@ -129,7 +129,7 @@ class _BroadcastScreenState extends State<BroadcastScreen> {
   String recorddd = "";
   final capttureimg = File('');
 
-  Future<File?> _startMediaRecrding() async {
+  Future<File?> _startMediaRecording() async {
     //  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     media_recorder.MediaRecorderObserver observer =
         media_recorder.MediaRecorderObserver(
@@ -138,7 +138,7 @@ class _BroadcastScreenState extends State<BroadcastScreen> {
       },
       onRecorderInfoUpdated: (RecorderInfo info) async {
         print('onRecorderInfoUpdated info: ${info.toJson()}');
-        final user = Provider.of<UserProvider>(context, listen: false);
+      //  final user = Provider.of<UserProvider>(context, listen: false);
         videofile = File(info.fileName);
         await FirestoreMethods()
             .startLiveStream(context, widget.userid, true, info.fileName);
@@ -1069,7 +1069,7 @@ class _BroadcastScreenState extends State<BroadcastScreen> {
                                                         title: 'Live ',
                                                         body:
                                                             '${user.user.name} Is Live Now');
-                                                    _startMediaRecrding();
+                                                    _startMediaRecording();
                                                     starttimer();
                                                     // });
                                                   } else {
@@ -1210,10 +1210,10 @@ class _BroadcastScreenState extends State<BroadcastScreen> {
                     if (widget.isBroadcaster) {
                       Navigator.pop(context);
                       //finaldialog();
-                      if (widget.isBroadcaster) {
+
                         _leaveChannel();
                         _stopMediaRecording();
-                      }
+
                     }
                   },
                   color: Colors.blue,

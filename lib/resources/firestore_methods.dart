@@ -27,13 +27,14 @@ class FirestoreMethods {
       return null;
     }
   }
-
+int count=0;
   Future<String?> uploadeImage(File file, String id) async {
     final storageRef = FirebaseStorage.instance.ref();
     String? dowurl;
+    count++;
     //Upload the file to firebase
     Reference reference = storageRef
-        .child('PostsRefs/"record${id}"/videos/${file.path.split('/').last}');
+        .child('PostsRefs/"record${id}${count}"/videos/${file.path.split('/').last}');
     UploadTask uploadTask = reference.putFile(file);
     dowurl = await (await uploadTask).ref.getDownloadURL();
     return dowurl;
@@ -45,7 +46,7 @@ class FirestoreMethods {
     String liveId = const Uuid().v1();
     String channelId = '';
     DocumentReference doc = _firestore.collection("Post").doc();
-    uploadeImage(File(record) ?? File(""), doc.id).then((value) async {
+    uploadeImage(File(record) , doc.id).then((value) async {
       try {
         channelId = '${user.user.uId}${user.user.name}';
         Context context = Context(
