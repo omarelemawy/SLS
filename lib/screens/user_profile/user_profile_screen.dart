@@ -9,13 +9,16 @@ import 'package:flutter_hex_color/flutter_hex_color.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gallery_saver/files.dart';
 import 'package:like_button/like_button.dart';
+import 'package:provider/provider.dart';
 import 'package:sls/screens/searchpage.dart';
 import '../../contance.dart';
 import '../../model/media_source.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import '../../model/user_model.dart';
+import '../../providers/user_provider.dart';
 import '../../shared/netWork/local/cache_helper.dart';
 import '../account/account_screen.dart';
+import '../chat.dart';
 import '../comment/comment_screen.dart';
 import '../feeds/feeds_screen.dart';
 import '../home/add_post.dart';
@@ -35,10 +38,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 class UserProfileScreen extends StatefulWidget {
   String name, id;
   String profileimage;
-  UserModel? user;
+  UserModel user;
 
   UserProfileScreen(
-      { this.name = "", this.profileimage = " ", this.id = "", this.user });
+      { this.name = "", this.profileimage = " ", this.id = "",required this.user });
 
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
@@ -49,7 +52,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
 
 
   final _fireStore = FirebaseFirestore.instance;
-
+  List<String>userslist = [];
+  List<bool>chatlist = [];
   int index = 0;
   TabController? _tabController;
   User? loggeduser;
@@ -104,7 +108,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   Future<UserModel?> readUser() async {
     final docUser = FirebaseFirestore.instance
         .collection("Users")
-        .doc(CacheHelper.getData(key: "uId"));
+        .doc(signInUser.uid);
     final snapshot = await docUser.get();
 
     if (snapshot.exists) {
@@ -136,7 +140,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
 
   AddPostState addpostedit = new AddPostState();
 
-  sendNotification(String title, String token)async {
+  sendNotification(String title, String token) async {
     final data = {
       'click_action': 'FLUTTER_NOTIFICATION_CLICK',
       'id': 1,
@@ -144,31 +148,36 @@ class _UserProfileScreenState extends State<UserProfileScreen>
       'message': title
     };
     try {
-     http.Response response =await  http.post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
-         headers: <String, String>{
-        'Content_Type' :'application/json',
-        'Authorization':'key=AAAATOwZIh4:APA91bGLnvyJyvi7yVuJgrXJuxFk6t8pUOVtk9ptz4IOyxL8EiNdmsujUINK8iLMhCdOlArPOILSJmFxfSOFq24SIZF8MS2vGKhvhATRskijs3YhKGO7Pf3aA43JAKYJWkaOFXU5fpI5'
-      },
-      body: jsonEncode(<String,dynamic>{
-            'notification':<String,dynamic>{'title':title,'body':'you are followed by some one'},
-            'priority':'high',
-            'data':data,
-            'to':'$token',
+      http.Response response = await http.post(
+          Uri.parse('https://fcm.googleapis.com/fcm/send'),
+          headers: <String, String>{
+            'Content_Type': 'application/json',
+            'Authorization': 'key=AAAATOwZIh4:APA91bGLnvyJyvi7yVuJgrXJuxFk6t8pUOVtk9ptz4IOyxL8EiNdmsujUINK8iLMhCdOlArPOILSJmFxfSOFq24SIZF8MS2vGKhvhATRskijs3YhKGO7Pf3aA43JAKYJWkaOFXU5fpI5'
+          },
+          body: jsonEncode(<String, dynamic>{
+            'notification': <String, dynamic>{
+              'title': title,
+              'body': 'you are followed by some one'
+            },
+            'priority': 'high',
+            'data': data,
+            'to': '$token',
           })
       );
-     if(response.statusCode==200)
-     {
-       print("notification is sended");
-     }
-     else
-       {
-         print("error");
-       }
-    }catch(e){}
+      if (response.statusCode == 200) {
+        print("notification is sended");
+      }
+      else {
+        print("error");
+      }
+    } catch (e) {}
   }
+
+
 
   @override
   Widget build(BuildContext context) {
+    final userperson=Provider.of<UserProvider>(context, listen: false);
     FirebaseFirestore.instance
         .collection("Users")
         .doc()
@@ -383,40 +392,50 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                   ),
                                                 ),
                                                 SizedBox(width: 20,),
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    if (widget.id !=
-                                                        loggeduser?.uid) {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (
-                                                                  context) =>
-                                                                  MessagesScreen(
-                                                                      id: widget
-                                                                          .id,
-                                                                      name: widget
-                                                                          .name,
-                                                                      photo: widget
-                                                                          .profileimage)));
-                                                    }
-                                                  },
-                                                  child: Container(
-                                                    padding: EdgeInsets
-                                                        .symmetric(vertical: 2,
-                                                        horizontal: 40),
-                                                    decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: Colors.white,
-                                                          width: 1.5),
-                                                      borderRadius: BorderRadius
-                                                          .circular(20),
+                                                Visibility(
+                                                  visible: widget.id !=
+                                                      loggeduser?.uid,
+                                                  child: GestureDetector(
+                                                    onTap: () async {
 
+                                                      if (widget.id !=
+                                                          loggeduser?.uid) {
+
+                                                       // doc.set({
+                                                       //    "userIds": [widget.id,userperson?.user.uId??" "]
+                                                       //  });
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (
+                                                                    context) =>
+                                                                    Chatscreen(
+
+                                                                      friendname: widget.name,
+                                                                      friendimage: widget.profileimage,
+                                                                      user: userr ?? UserModel(),
+                                                                      friendid: widget.id,
+                                                                    )));
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                      padding: EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 2,
+                                                          horizontal: 40),
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: Colors.white,
+                                                            width: 1.5),
+                                                        borderRadius: BorderRadius
+                                                            .circular(20),
+
+                                                      ),
+                                                      child: Icon(
+                                                        Icons.mail_outline,
+                                                        color: Colors.green,
+                                                        size: 20,),
                                                     ),
-                                                    child: Icon(
-                                                      Icons.mail_outline,
-                                                      color: Colors.green,
-                                                      size: 20,),
                                                   ),
                                                 ),
                                               ],
@@ -458,8 +477,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                       ),
                                     ),
                                   ],
-                                  onTap: (index)
-                                  {
+                                  onTap: (index) {
                                     setState(() {});
                                   },
                                   controller: _tabController,
@@ -521,6 +539,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                                       builder: (
                                                                           context) =>
                                                                           UserProfileScreen(
+
                                                                             name: snapshot
                                                                                 .data!
                                                                                 .docs[index]
@@ -533,7 +552,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                                             id: snapshot
                                                                                 .data!
                                                                                 .docs[index]
-                                                                            ["uid"],)));
+                                                                            ["uid"],user:widget.user)));
                                                             },
                                                             child: Row(
                                                               children: [
@@ -553,13 +572,20 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                                   width: 10,
                                                                 ),
                                                                 Column(
-                                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  mainAxisAlignment: MainAxisAlignment
+                                                                      .start,
+                                                                  crossAxisAlignment: CrossAxisAlignment
+                                                                      .start,
                                                                   children: [
                                                                     Text(
-                                                                      snapshot.data!.docs[index]["userName"] ??" ",
+                                                                      snapshot
+                                                                          .data!
+                                                                          .docs[index]["userName"] ??
+                                                                          " ",
                                                                       style: TextStyle(
-                                                                          color: Colors.white, fontWeight: FontWeight
+                                                                          color: Colors
+                                                                              .white,
+                                                                          fontWeight: FontWeight
                                                                               .bold,
                                                                           fontSize: 14),
                                                                     ),
@@ -882,13 +908,15 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                                 builder: (
                                                                     context) =>
 
-                                                            StreamCommentScreen(
+                                                                    StreamCommentScreen(
                                                                         context,
-                                                                streamid: postid,
+                                                                        streamid: postid,
                                                                         ownerid: signInUser
                                                                             .uid,
                                                                         ownername: signInUser
-                                                                            .displayName,ownerimg:signInUser.photoURL),
+                                                                            .displayName,
+                                                                        ownerimg: signInUser
+                                                                            .photoURL),
                                                               ));
                                                         },
                                                         child: Row(
@@ -1005,7 +1033,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                                         id: snapshot
                                                                             .data!
                                                                             .docs[index]
-                                                                        ["uid"])));
+                                                                        ["uid"],user: widget.user,)));
                                                       },
                                                       child: Row(
                                                         children: [
@@ -1075,8 +1103,10 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                       )
                                                           .set({
                                                         "followers": FieldValue
-                                                            .arrayRemove([ FirebaseAuth.instance
-                                                            .currentUser?.uid])
+                                                            .arrayRemove([
+                                                          FirebaseAuth.instance
+                                                              .currentUser?.uid
+                                                        ])
                                                       }, SetOptions(
                                                           merge: true));
                                                     },
@@ -1106,10 +1136,12 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                   ) :
                                                   GestureDetector(
                                                     onTap: () async {
-                                                      final DocumentSnapshot gettoken= await FirebaseFirestore.instance.collection('Users')
+                                                      final DocumentSnapshot gettoken = await FirebaseFirestore
+                                                          .instance.collection(
+                                                          'Users')
                                                           .doc(uId).get();
                                                       //    bool isseller= getuserdoc['becomeaseller'];
-                                                      String tokenn= gettoken['token'];
+                                                      String tokenn = gettoken['token'];
 
                                                       FirebaseFirestore.instance
                                                           .collection("Users")
@@ -1124,14 +1156,17 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                       FirebaseFirestore.instance
                                                           .collection("Users")
                                                           .doc(uId
-                                                         )
+                                                      )
                                                           .set({
                                                         "followers": FieldValue
-                                                            .arrayUnion([ FirebaseAuth.instance
-                                                            .currentUser?.uid])
+                                                            .arrayUnion([
+                                                          FirebaseAuth.instance
+                                                              .currentUser?.uid
+                                                        ])
                                                       }, SetOptions(
                                                           merge: true));
-                                                      sendNotification("follow", tokenn);
+                                                      sendNotification(
+                                                          "follow", tokenn);
                                                     },
                                                     child: Container(
                                                       padding: const EdgeInsets
@@ -1323,10 +1358,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                   const SizedBox(
                                                     width: 10,
                                                   ),
-                                                  // Text(
-                                                  //   "${likecount}",
-                                                  //   style: TextStyle(color: Colors.white),
-                                                  // ),
+
                                                   const SizedBox(
                                                     width: 80,
                                                   ),
@@ -1335,7 +1367,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                     height: 30,
                                                     color: Colors.white,
                                                   ),
-                                                  const SizedBox(
+                                                 SizedBox(
                                                     width: 80,
                                                   ),
                                                   InkWell(
@@ -1344,36 +1376,23 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                           context: context,
                                                           useRootNavigator: true,
                                                           isScrollControlled: true,
-                                                          shape: const RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius
-                                                                .vertical(
+                                                          shape:  RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.vertical(
                                                               top: Radius
                                                                   .circular(20),
                                                             ),
                                                           ),
-                                                          clipBehavior: Clip
-                                                              .antiAliasWithSaveLayer,
+                                                          clipBehavior: Clip.antiAliasWithSaveLayer,
                                                           builder: (context) {
                                                             return Container(
                                                               color: postColor,
-                                                              height:
-                                                              MediaQuery
-                                                                  .of(context)
-                                                                  .size
-                                                                  .height -
-                                                                  30,
-                                                              padding: EdgeInsets
-                                                                  .all(10),
+                                                              height: MediaQuery.of(context).size.height - 30,
+                                                              padding: EdgeInsets.all(10),
                                                               child: CommentScreen(
                                                                   context,
-                                                                  postid: snapshot
-                                                                      .data!
-                                                                      .docs[index]["uid"],
-                                                                  ownerid: signInUser
-                                                                      .uid,
-                                                                  ownername: userr
-                                                                      ?.name ??
-                                                                      " "),);
+                                                                  postid: snapshot.data!.docs[index]["uid"],
+                                                                  ownerid: signInUser.uid,
+                                                                  ownername: userr?.name ??" "),);
                                                           });
                                                     },
                                                     child: Row(
@@ -1389,11 +1408,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                           width: 10,
                                                         ),
                                                         Text(
-                                                          "${CacheHelper.getInt(
-                                                              key: "lenofcomment")}",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black),
+                                                          "${CacheHelper.getInt(key: "lenofcomment")}",
+                                                          style: TextStyle(color: Colors.black),
                                                         ),
                                                       ],
                                                     ),

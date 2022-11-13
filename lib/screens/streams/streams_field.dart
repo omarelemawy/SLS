@@ -153,7 +153,7 @@ Future<List<String>>videos()async
                                           id: snapshot.data!.docs[index]
                                               ["uid"],
                                         profileimage: snapshot.data!.docs[index]
-                                        ["profile"],)));
+                                        ["profile"],user: widget.user??UserModel(),)));
                             },
                             child: Row(
                               children: [

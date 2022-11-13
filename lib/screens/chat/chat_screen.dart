@@ -27,14 +27,26 @@ class _ChatScreenState extends State<ChatScreen> {
   final _auth=FirebaseAuth.instance;
   late User signInUser;
   String? messageText;
+
   @override
   void initState() {
     super.initState();
-
+    getCurrentUser();
+  }
+  void getCurrentUser() {
+    try {
+      final user = _auth.currentUser;
+      user?.reload();
+      if (user != null) {
+        signInUser = user;
+      }
+    } catch (e) {
+      print(e);
+    }
   }
   Future<UserModel> readUser() async {
     final docUser = FirebaseFirestore.instance.collection("Users").doc(
-        CacheHelper.getData(key: "uId"));
+        signInUser.uid);
     final snapshot = await docUser.get();
     if (snapshot.exists) {
       return UserModel.fromJson(snapshot.data());

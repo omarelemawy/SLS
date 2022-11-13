@@ -222,8 +222,8 @@ class _FeedsScreenState extends State<FeedsScreen> {
                                                                 ["profile"] ??
                                                             "",
                                                     id: snapshot.data!
-                                                        .docs[index]["uid"],
-                                                    user: widget.user)));
+                                                        .docs[index]["uid"],user:widget.user
+                                                    )));
                                   },
                                   child: Row(
                                     children: [

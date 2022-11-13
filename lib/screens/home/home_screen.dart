@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hex_color/flutter_hex_color.dart';
@@ -44,10 +45,21 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   // UserModel user=UserModel();
-
+  final _auth = FirebaseAuth.instance;
+  late User signInUser;
   TextEditingController textController = TextEditingController();
   final _fireStore = FirebaseFirestore.instance;
-
+  void getCurrentUser() {
+    try {
+      final user = _auth.currentUser;
+      user?.reload();
+      if (user != null) {
+        signInUser = user;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
   //  int index = 0;
   TabController? _tabController;
   final Stream<QuerySnapshot> _postStream =
@@ -63,8 +75,10 @@ class _HomeScreenState extends State<HomeScreen>
     service.intialize();
     listenToNotification();
     super.initState();
+    getCurrentUser();
     _tabController = TabController(length: 2, vsync: this);
     _tabController!.addListener(_handleTabSelection);
+    debugPrint("${userr?.name}kjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
   }
 
   void _handleTabSelection() {
@@ -74,13 +88,11 @@ class _HomeScreenState extends State<HomeScreen>
   UserModel? userr;
 
   Future<UserModel?> readUser() async {
-    final docUser = FirebaseFirestore.instance
-        .collection("Users")
-        .doc(CacheHelper.getData(key: "uId"));
+    final docUser = FirebaseFirestore.instance.collection("Users").doc(signInUser.uid);
     final snapshot = await docUser.get();
-
     if (snapshot.exists) {
       userr = UserModel.fromJson(snapshot.data());
+
       return userr;
     } else {
       return UserModel(name: '');
@@ -114,6 +126,8 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+
+    debugPrint("${userr?.name}widgettttttttttttttttttttttttttttttttttttttttttttttt");
     final userperson = Provider.of<UserProvider>(context).user;
     return Scaffold(
         backgroundColor: HexColor("#f7b6b8").withOpacity(.5),
@@ -178,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen>
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => MessagesScreen()));
+                          builder: (context) => MessagesScreen(user: userr?? UserModel(),)));
                 },
                 child: const Icon(
                   Icons.chat_outlined,
@@ -476,7 +490,7 @@ class _HomeScreenState extends State<HomeScreen>
                         Center(
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: FeedsScreen(userr ?? UserModel()),
+                            child: FeedsScreen(userr??UserModel() ),
                           ),
                         ),
                       ],
