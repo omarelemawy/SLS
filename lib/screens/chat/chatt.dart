@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import 'package:flutter_hex_color/flutter_hex_color.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
+import '../../model/user_model.dart';
 import '../account/account_screen.dart';
 import '../home/home_Screen.dart';
 import '../messages/messages_screen.dart';
@@ -11,7 +12,8 @@ import '../notification/notification_screen.dart';
 
 class Chat extends StatefulWidget {
   static String id = "chat";
-
+  // UserModel userr;
+  // Chat({required this.userr});
   @override
   State<StatefulWidget> createState() => Myapp();
 }
@@ -70,7 +72,7 @@ class Myapp extends State<Chat> {
                             Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => const HomeScreen()),
+                                    builder: (context) =>  HomeScreen()),
                                 (route) => false);
                           },
                           child: const Icon(Icons.home_outlined,
@@ -112,7 +114,7 @@ class Myapp extends State<Chat> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const AccountScreen()));
+                                  builder: (context) =>  AccountScreen()));
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -178,12 +180,12 @@ class Myapp extends State<Chat> {
                         // final widgett=message( messtext: messageemail) ;
                         //Text('$messageemail',style: TextStyle(color: Colors.blue,fontSize: 15));
                         if (messageemail == usermail) {
-                          Material ttt = Material(
+                          Material sendermail = Material(
                             child: Text('$messageemail',
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 15)),
                           );
-                          Material tt2 = Material(
+                          Material sender = Material(
                             elevation: 10,
                             shadowColor: Colors.grey,
                             borderRadius: BorderRadius.only(
@@ -202,7 +204,7 @@ class Myapp extends State<Chat> {
                               ),
                             ),
                           );
-                          addmessage.add(tt2);
+                          addmessage.add(sender);
                         }
                         Material tt = Material(
                           color: HexColor("#f7b6b8"),
@@ -221,13 +223,13 @@ class Myapp extends State<Chat> {
                             bottomLeft: Radius.circular(30),
                             bottomRight: Radius.circular(30),
                           ),
-                          color: Colors.blue,
+                          color: Colors.white70,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10.0, vertical: 20),
                             child: Text('$messagetext',
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 25)),
+                                    color: Colors.black, fontSize: 25)),
                           ),
                         );
                         addmessage.add(tt);

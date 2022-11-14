@@ -45,7 +45,7 @@ class DefaultFirebaseOptions {
     storageBucket: 'slsproject-d5968.appspot.com',
     measurementId: 'G-BP6LX4FMCD',
   );
-
+//'slsproject-d5968.firebaseapp.com'
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBqrbMNA_BFzLC9xg-N2r7_6kaa5Rx9ilc',
     appId: '1:330378584606:android:f9c13ba0c976555953840f',

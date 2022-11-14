@@ -15,7 +15,8 @@ import '../notification/notification_screen.dart';
 import '../streams/streams_field.dart';
 
 class MyProfileScreen extends StatefulWidget {
-  const MyProfileScreen({Key? key}) : super(key: key);
+  // UserModel? user;
+  // MyProfileScreen({required this.user}) ;
 
   @override
   State<MyProfileScreen> createState() => _MyProfileScreenState();
@@ -44,16 +45,22 @@ class _MyProfileScreenState extends State<MyProfileScreen>with SingleTickerProvi
   }
   @override
   Widget build(BuildContext context) {
-    Future<UserModel> readUser() async {
-      final docUser = FirebaseFirestore.instance.collection("Users").doc(
-          CacheHelper.getData(key: "uId"));
+
+    UserModel? userr;
+    Future<UserModel?> readUser() async {
+      final docUser = FirebaseFirestore.instance
+          .collection("Users")
+          .doc(CacheHelper.getData(key: "uId"));
       final snapshot = await docUser.get();
+
       if (snapshot.exists) {
-        return UserModel.fromJson(snapshot.data());
+        userr = UserModel.fromJson(snapshot.data());
+        return userr;
       } else {
         return UserModel(name: '');
       }
     }
+
     return Scaffold(
       backgroundColor:HexColor("#f7b6b8"),
       appBar: AppBar(
@@ -125,7 +132,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>with SingleTickerProvi
 
                             ),
                             child: Image.network(
-                              snapshot.data!.photo!,                                errorBuilder: (c, d, s) {
+                             "",errorBuilder: (c, d, s) {
                               return Container(
                                 height: 30,
                                 width: 30,
@@ -317,7 +324,7 @@ class _MyProfileScreenState extends State<MyProfileScreen>with SingleTickerProvi
                                 padding: const EdgeInsets.all(8.0),
                                 child: ListView.separated(itemBuilder:
                                     (context,index){
-                                  return FeedsScreen();
+                                  return FeedsScreen(userr??UserModel(),);
                                 },
                                   itemCount: 12, separatorBuilder:
                                       (BuildContext context, int index) {

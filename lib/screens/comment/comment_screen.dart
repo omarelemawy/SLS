@@ -1,14 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-
+import 'package:sls/shared/netWork/local/cache_helper.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:uuid/uuid.dart';
 import '../../contance.dart';
+import '../notification/notification_screen.dart';
+import '../service/localnotificationscreen.dart';
+import 'package:provider/provider.dart';
+import '../../providers/user_provider.dart';
+import '../widget/custom_text.dart';
 
 class CommentScreen extends StatefulWidget {
-  const CommentScreen({Key? key}) : super(key: key);
+  String? postid;
+  String? ownerid;
+  String? ownername;
+  String? ownerimg;
+  CommentScreen(BuildContext context, {this.postid,this.ownerid,this.ownername,this.ownerimg});
 
   @override
   State<CommentScreen> createState() => _CommentScreenState();
@@ -19,31 +31,42 @@ class _CommentScreenState extends State<CommentScreen> {
   String collectionname = 'messages';
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   String? messagetext;
+  bool isliked=false;
+  List<String>likeslist=[];
   final textfield = TextEditingController();
   final _auth = FirebaseAuth.instance;
   bool spinner = false;
   int leng = 0;
   bool isdesending = false;
+  late final LocalNotificationService service;
+  @override
+  void initState() {
+    service = LocalNotificationService();
+    service.intialize();
+    listenToNotification();
+    super.initState();
+  }
 
   void clear() {
     textfield.clear();
   }
-
-  // String idcomment()
-  // {
-  //   List<String> listid=[];
-  //   firestore.collection("Posts").get().then((valuee) => {
-  //   valuee.docs.forEach((elementt) {
-  //   idd = elementt.data()["id"] as String ;})});
-  //
-  //   return listid.add("h");
-  // }
-  String postid = "";
-  String postname = "";
+  void getCurrentUser() {
+    try {
+      final user = _auth.currentUser;
+      user?.reload();
+      if (user != null) {
+        loggeruser = user;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+String userimg="";
+  String usernamecomment = "";
   String postidddd="";
   @override
   Widget build(BuildContext context) {
-
+    final user = Provider.of<UserProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: postColor,
       bottomNavigationBar: Container(
@@ -94,8 +117,15 @@ class _CommentScreenState extends State<CommentScreen> {
                   child: InkWell(
                     // DocumentReference doc = _fireStore.collection("Posts").doc();
                       onTap: () {
-                        databae();
+                        setState(()async {
+                          FirebaseFirestore.instance.collection("Notifications").doc().set({"data":"comment","relatedinfo":{"postId": "", "orderNo": ''},"seen": false,"topic": "follow","time": "${DateTime.now()}","senderInfoo":{"userName": user.user.name??" ", "uid": user.user.uId??" ", "userImg": user.user.photo??" ",}});
+                          await service.showNotification(
+                              id:0 ,
+                              title: 'comment ',
+                              body: '${user.user.name} comment your post');
+                        databasecomment(context);
                         textfield.clear();
+                        });
                       },
                       child: Icon(
                         Icons.arrow_forward,
@@ -107,13 +137,11 @@ class _CommentScreenState extends State<CommentScreen> {
           )),
 
       body: StreamBuilder(
-
-          stream: FirebaseFirestore.instance.collection("comments").orderBy("time").snapshots(),
+          stream: FirebaseFirestore.instance.collection("Comments").where("relatedPost",isEqualTo: widget.postid).snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
-              return CircularProgressIndicator();
+              return Center(child: CustomText(text:"Nothing Here",fontWeight: FontWeight.bold,color: Colors.white,),);
             }
-
             return Stack(
               children: [
                 Column(
@@ -126,16 +154,16 @@ class _CommentScreenState extends State<CommentScreen> {
                           child: Row(
                             children: [
                               Text(
-                                "${leng} Comments",
+                                "${CacheHelper.getInt(key:"commentpost")} Comments",
                                 style: TextStyle(color: Colors.white),
                               ),
                             ],
                           ),
-                        ), //Spacer(),
+                        ),
                         Row(
                           children: [
                             Text(
-                              idd,
+                              "Newest first",
                               style: TextStyle(
                                   color: Colors.blue[700],
                                   fontWeight: FontWeight.bold),
@@ -146,6 +174,7 @@ class _CommentScreenState extends State<CommentScreen> {
                             InkWell(
                                 onTap: () {
                                   Navigator.pop(context);
+                                  // databasecomment(context);
                                 },
                                 child: Icon(
                                   Icons.close,
@@ -154,8 +183,8 @@ class _CommentScreenState extends State<CommentScreen> {
                             SizedBox(
                               width: 10,
                             ),
-                          ],
-                        ),
+                        ],),//Spacer(),
+
                       ],
                     ),
                     Container(
@@ -172,24 +201,18 @@ class _CommentScreenState extends State<CommentScreen> {
                   padding: const EdgeInsets.only(top: 40.0),
                   child: ListView.separated(
                       separatorBuilder: (BuildContext context, int index) {
-                        postid = snapshot.data!.docs[index]["postid"];
-                        postname = snapshot.data!.docs[index]["user"];
+                        //postid = snapshot.data!.docs[index]["postid"];
+                        usernamecomment = snapshot.data!.docs[index]["userName"];
+                        userimg = snapshot.data!.docs[index]["userImg"];
+
                         return const SizedBox(
                           height: 10,
                         );
                       },
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (BuildContext context, int index) {
-                        final itemsort = isdesending
-                            ? snapshot.data!.docs.reversed.toList()
-                            : snapshot.data!.docs;
-                        final items = itemsort[index];
                         leng = snapshot.data!.docs.length;
-                        // DateTime dataNasc = DateTime.fromMicrosecondsSinceEpoch(
-                        //     snapshot.data!.docs[index]["time"]
-                        //         .microsecondsSinceEpoch);
-                        // String formattedDate =
-                        //     DateFormat('yyyy-MM-dd – kk:mm').format(dataNasc);
+                     CacheHelper.setInt(key:"commentpost", value: leng);
                         return Row(
                           children: [
                             SizedBox(
@@ -199,8 +222,9 @@ class _CommentScreenState extends State<CommentScreen> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                CircleAvatar(radius: 10,child: Image.network(userimg,),backgroundColor: Colors.grey,),
                                 Text(
-                                  postname,
+                                  usernamecomment,
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold),
@@ -217,7 +241,7 @@ class _CommentScreenState extends State<CommentScreen> {
                                       color: Colors.blueGrey[300],
                                       borderRadius: BorderRadius.circular(10)),
                                   child: Text(
-                                    snapshot.data!.docs[index]["message"],
+                                    snapshot.data!.docs[index]["comment"],
                                     style:
                                     TextStyle(color: Colors.blueGrey[900]),
                                   ),
@@ -227,23 +251,32 @@ class _CommentScreenState extends State<CommentScreen> {
                                 ),
                                 Row(
                                   children: [
-                                    SvgPicture.asset(
+                                    GestureDetector(
+                                      onTap: (){
+                                        setState(()async{
+                                          FirebaseFirestore.instance.collection("Notifications").doc().set({"data":"like","relatedinfo":{"postId": "", "orderNo": ''},"seen": false,"topic": "like","time": "${DateTime.now()}","senderInfoo":{"userName": user.user.name??" ", "uid": user.user.uId??" ", "userImg": user.user.photo??" ",}});
+                                          await service.showNotification(
+                                              id:0 ,
+                                              title: 'like ',
+                                              body: '${user.user.name} like your post');
+                                          isliked=!isliked;
+                                          isliked ? likeslist.remove(loggeruser!.uid):likeslist.add(loggeruser!.uid) ;
+                                          _fireStore.collection("Comments").doc().set(
+                                              {"likes":likeslist});
+                                        }); },
+                                      // child: Icon(
+                                      //   Icons.favorite,
+                                      //   color: isliked ? Colors.red : Colors.grey,
+                                      //   size: 25,
+                                      // ),
+                                    child: SvgPicture.asset(
                                       "assets/profile_icons/like.svg",
                                       semanticsLabel: 'Acme Logo',
-                                      color: Colors.grey[100],
-                                      width: 20,
-                                      height: 20,
-                                    ),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    Text(
-                                      "2",
-                                      style: TextStyle(color: Colors.grey[100]),
-                                    ),
-                                    const SizedBox(
-                                      width: 18,
-                                    ),
+                                      color: isliked ? Colors.blue : Colors.grey,
+                                      width: 25,
+                                      height: 25,
+                                      ),),
+                                    SizedBox(width: 8,),Text("${snapshot.data?.docs[index]["likes"].length}"),
                                     SvgPicture.asset(
                                       "assets/profile_icons/share.svg",
                                       semanticsLabel: 'Acme Logo',
@@ -254,8 +287,8 @@ class _CommentScreenState extends State<CommentScreen> {
                                     const SizedBox(
                                       width: 70,
                                     ),
-                                    Text(
-                                      "",
+                                    Text("",
+                                    // timeago.format((snapshot.data?.docs[index]["time"]).toDate()),
                                       //formattedDate,
                                       style: TextStyle(
                                           color: Colors.grey[700],
@@ -312,7 +345,7 @@ class _CommentScreenState extends State<CommentScreen> {
     );
   }
 
-  Widget commentist() {
+  Widget commetist() {
     return Row(
       children: [
         SizedBox(
@@ -389,7 +422,7 @@ class _CommentScreenState extends State<CommentScreen> {
                   width: 70,
                 ),
                 Text(
-                  "Jun 20,2022",
+                 " snap",
                   style: TextStyle(color: Colors.grey[700], fontSize: 12),
                 )
               ],
@@ -411,11 +444,8 @@ class _CommentScreenState extends State<CommentScreen> {
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                   ),
-                  child: Image.network(
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png",
-                    width: 15,
-                    height: 15,
-                    fit: BoxFit.fill,
+                  child: CircleAvatar(
+                   backgroundImage: CachedNetworkImageProvider(img),
                   ),
                 ),
                 SizedBox(
@@ -435,95 +465,57 @@ class _CommentScreenState extends State<CommentScreen> {
       ],
     );
   }
+  void listenToNotification() =>
+      service.onNotificationClick.stream.listen(onNoticationListener);
 
+  void onNoticationListener(String? payload) {
+    if (payload != null && payload.isNotEmpty) {
+      print('payload $payload');
+
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: ((context) => NotificationScreen())));
+    }
+  }
   final _fireStore = FirebaseFirestore.instance;
  String idd = "";
+  String commentId=Uuid().v4();
   String username = "";
-  String f="";
+  String img="";
   List<String>docc=[];
-  databae() async {
-    DocumentReference comments= _fireStore.collection("comments").doc();
-    _fireStore.collection("Posts").get().then((value) => {
 
-      for(int i=0;i<value.docs.length;i++)
-      {
-        idd=value.docs[i].data()["id"]
-      },
-    value.docs.forEach((element) {
-            idd = element.data()["id"];
-            username = element.data()["nameii"];
-            // docc.add(idd);
-            // for(int y=0;y<docc.length;y++)
-            // {f=docc[0];}
-          comments.set({
-            'time':FieldValue.serverTimestamp(),
-            'message': messagetext,
-            "postid":idd,
-            "user": username,
-          });}),
-        });
+  databasecomment(BuildContext context) async {
+    final user = Provider.of<UserProvider>(context, listen: false);
+    DocumentReference doc = _fireStore.collection("Comments").doc();
+    _fireStore.collection("Comments").doc().set({
+      "comment":messagetext,
+      "likes":[],
+      "relatedPost":widget.postid,
+      "replies":[],
+      "time":DateTime.now,
+      "userInfo":{
+        "userID":widget.ownerid,
+        "userImg":user.user.photo,
+        "userName":widget.ownername,
+      }
+    });
+
+
+    //_fireStore.collection("commentsuer").doc("widget.postid").collection("comment");
+    // _fireStore.collection("Posts").get().then((value) => {
+    //   for(int i=0;i<value.docs.length;i++)
+    //   {
+    //     idd=value.docs[i].data()["id"]
+    //   },
+    // value.docs.forEach((element) {
+    //         idd = element.data()["id"];
+    //         username = element.data()["nameii"];
+    //         img= element.data()["profileImg"];
+
+
+       }
+
   }
 
-// DocumentReference doc2 = firestore
-//     .collection("Posts")
-//     .doc();
-//     //.collection("commenty")
-//    // .doc();
-// //  firestore.collection("Users").get().then((value) => {
-// //value.docs.
-// //            valuee.docs.forEach((element) {
-// doc2. set ({
-// "comments":{
-// 'message': messagetext,
-// 'email': _auth.currentUser?.email,
-// // 'name': element.data()["nameii"],
-// 'commentleng': leng,
-// // 'image':  element.data()["profileImage"],
-// 'time': DateTime.now(),
-// }
-// });
-//
-// })});
-// });
-//  }),
-//});
 
-// firestore.collection("Users").get().then((value) => {
-//       //value.docs.
-//       value.docs.forEach((element) {
-//         doc.set({
-//           'message': messagetext,
-//           'email': _auth.currentUser?.email,
-//           'name': element.data()["userName"],
-//           'commentleng': leng,
-//           // 'image':  element.data()["profileImage"],
-//           'time': DateTime.now(),
-//         });
-//       })
-//     });
-//}
-}
-
-// void filtercountry(String iddfield) {
-//   setState(() {
-//
-//     firestore.collection("Posts").get().then((valuee) => {
-//       valuee.docs.forEach((elementt) {
-//         idd = elementt.data()["id"];
-//         countrycc.add(idd.toLowerCase());
-//         countrycc=countrycc.where((element) =>element.toLowerCase(),isEqualTo:iddfield.toLowerCase()).toList();
-//         //countrycc=  mapp.entries.map((e) =>UserModel( name: e.value.toString().toLowerCase())).toList();
-//       })
-//     });
-//     // countrycc.contains(searchedname.toLowerCase()) ;
-//     print("*********************************************");
-//     //
-//     print(countrycc);
-//
-//     countrycc=  itemlistnme.where((element) => element.contains(searchedname.toLowerCase()))
-//         .toList();
-//
-//     //toLowerCase().contains(searchedname.toLowerCase()) as List<String>;
-//     // .toList();
-//   });
-// }

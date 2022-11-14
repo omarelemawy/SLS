@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hex_color/flutter_hex_color.dart';
+import 'package:flutter_svg/svg.dart';
 import '../model/user_model.dart';
 import 'chat/chatt.dart';
 
 class MySearchPage extends StatefulWidget {
-  const MySearchPage({Key? key}) : super(key: key);
+//   UserModel user;
+// MySearchPage({required this.user}) ;
 
   @override
   State<MySearchPage> createState() => _MySearchPageState();
@@ -25,14 +27,14 @@ class _MySearchPageState extends State<MySearchPage> {
 
   late DocumentSnapshot idd;
   List<String> keyword = [];
-
+String users="";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor("#aa8c4f"),
+      backgroundColor: HexColor("#f7b6b8"),
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: HexColor("#aa8c4f"),
+        backgroundColor: HexColor("#f7b6b8"),
         // The search area here
         title: Padding(
           padding: const EdgeInsets.only(left: 30.0),
@@ -71,83 +73,81 @@ class _MySearchPageState extends State<MySearchPage> {
           if (!snapshot.hasData) {
             return CircularProgressIndicator();
           }
-
+//List<String>userslist=snapshot.data.docs["userName"];
           return ListView.separated(
               itemBuilder: (context, index) {
                 //  idd=snapshot.data.docs()[index];
-                return InkWell(
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Chat()));
-                    },
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Stack(
-                          alignment: Alignment.topRight,
+              // List item=snapshot.data.docs["index"]["userName"];
+                return Column(
+                  children: [
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.end,
+                    //   children: [
+                    //     InkWell(onTap:(){
+                    //     //  item.clear();
+                    //     },child: Text("clear all",style: TextStyle(color: Colors.blue),)),
+                    //     SizedBox(height: 10,),
+                    //   ],
+                    // ),
+                    InkWell(
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Chat()));
+                        },
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: Image.network(
-                                "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png",
-                                errorBuilder: (c, d, s) {
-                                  return Container(
-                                    height: 20,
-                                    width: 20,
-                                  );
-                                },
-                                height: 40,
-                                width: 40,
-                                fit: BoxFit.fill,
-                              ),
+                            const SizedBox(
+                              width: 10,
                             ),
-                            Container(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              height: 7,
-                              width: 7,
-                              decoration: const BoxDecoration(
-                                  shape: BoxShape.circle, color: Colors.green),
+                            Stack(
+                              alignment: Alignment.topRight,
+                              children: [
+                                Container(
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Text("u"),
+                                ),
+                                Container(
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  height: 7,
+                                  width: 7,
+                                  decoration: const BoxDecoration(
+                                      shape: BoxShape.circle, color: Colors.green),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        const SizedBox(
-                          width: 30,
-                        ),
-                        Text(
-                          textcontroller.text.isEmpty
-                              ? snapshot.data.docs[index]["userName"]
-                              : listofuserouttput[index],
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        const Spacer(),
-                        Column(
-                          children: [
-                            Text(
-                              "Jun 20,2022",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 14),
+                            const SizedBox(
+                              width: 30,
                             ),
                             Text(
-                              "هايهراه",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 12),
+                              textcontroller.text.isEmpty
+                                  ? snapshot.data.docs[index]["userName"]
+                                  : buildsearchuser( index),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const Spacer(),
+                            Column(
+                              children: [
+                                Text(
+                                  snapshot.data.docs[index]["email"],
+                                  style:
+                                      TextStyle(color: Colors.white, fontSize: 14),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              width: 10,
                             ),
                           ],
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                      ],
-                    ));
+                        )),
+                  ],
+                );
               },
               separatorBuilder: (context, index) {
                 return Container(
@@ -164,11 +164,35 @@ class _MySearchPageState extends State<MySearchPage> {
       ),
     );
   }
-
+String buildsearchuser(int index){
+    return listofuserouttput[index];
+}
   List<String> listofusername = [];
   List<String> listofuseroutput = [];
   List<String> listofuserouttput = [];
   final _fireStore = FirebaseFirestore.instance;
+
+  Container buildcontent() {
+    final Orientation orientation=MediaQuery.of(context).orientation;
+    return Container(
+      child: Center(
+        child: ListView(
+          children: [
+            SvgPicture.asset(
+              "assets/searchh.png",
+              height: 300,
+            ),
+            Text(
+              "Find users",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white, fontStyle: FontStyle.normal,fontWeight: FontWeight.w600,fontSize: 60.0),
+
+            )
+          ],
+        ),
+      ),
+    );
+  }
 
   void filtercountry(String searchedname) {
     setState(() {
