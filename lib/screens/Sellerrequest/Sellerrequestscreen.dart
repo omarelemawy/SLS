@@ -10,7 +10,7 @@ class Sellerreuestscreen extends StatefulWidget{
 }
 class Sellerrequeststate extends State<Sellerreuestscreen>{
   final Stream<QuerySnapshot> _sellerStream =
-  FirebaseFirestore.instance.collection('Users').where("becomeseller",isEqualTo: false).snapshots();
+  FirebaseFirestore.instance.collection('Users').where("role",isEqualTo: "PendingSeller").snapshots();
   @override
   Widget build(BuildContext context) {
    return StreamBuilder(
@@ -115,7 +115,7 @@ class Sellerrequeststate extends State<Sellerreuestscreen>{
                        CustomButton(
                              () {
                            FirebaseFirestore.instance
-                               .collection('sellerreuest')
+                               .collection('Users')
                                .doc(snapshot.data!.docs[index]["uId"])
                                .delete();
                          },

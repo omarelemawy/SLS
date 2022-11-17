@@ -164,8 +164,6 @@ class _MyProfileScreenState extends State<MyProfileScreen>with SingleTickerProvi
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-
-
             Expanded(
               child: Scaffold(
                 backgroundColor: HexColor("#f7b6b8"),

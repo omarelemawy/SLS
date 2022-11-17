@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:sls/screens/widget/custom_text.dart';
 import 'package:sls/shared/netWork/local/cache_helper.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:uuid/uuid.dart';
@@ -36,7 +37,8 @@ class _StreamCommentScreenState extends State<StreamCommentScreen> {
   List<String> likeslist = [];
   bool isliked = false;
   bool isdesending = false;
-
+  bool commentshow=false;
+  bool commenthide=false;
   void clear() {
     textfield.clear();
   }
@@ -358,17 +360,26 @@ class _StreamCommentScreenState extends State<StreamCommentScreen> {
                                         height: 25,
                                       ),
                                     ),
-                                    Text(
-                                        "${likeslist.length}"),
+                                    Text("${likeslist.length}"),
                                     const SizedBox(
                                       width: 18,
                                     ),
-                                    SvgPicture.asset(
-                                      "assets/profile_icons/share.svg",
-                                      semanticsLabel: 'Acme Logo',
-                                      color: Colors.blue,
-                                      width: 25,
-                                      height: 25,
+                                    Visibility(
+                                      visible:!commentshow,
+                                      child: InkWell(
+                                        onTap:(){
+                                          setState((){
+                                          commentshow =true;
+                                          });
+                                        },
+                                        child: SvgPicture.asset(
+                                          "assets/profile_icons/share.svg",
+                                          semanticsLabel: 'Acme Logo',
+                                          color: Colors.blue,
+                                          width: 25,
+                                          height: 25,
+                                        ),
+                                      ),
                                     ),
                                     const SizedBox(
                                       width: 70,
@@ -389,11 +400,6 @@ class _StreamCommentScreenState extends State<StreamCommentScreen> {
                                 ),
                                 Row(
                                   children: [
-                                    Text(
-                                      "1",
-                                      style: TextStyle(
-                                          color: Colors.blue, fontSize: 13),
-                                    ),
                                     SizedBox(
                                       width: 5,
                                     ),
@@ -412,15 +418,24 @@ class _StreamCommentScreenState extends State<StreamCommentScreen> {
                                     SizedBox(
                                       width: 15,
                                     ),
-                                    Text(
-                                      "Show replies",
-                                      style: TextStyle(
-                                          color: Colors.blue,
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold),
+                                    Visibility(
+                                       visible:!commentshow,
+                                      child: Text(
+                                        "Show replies",
+                                        style: TextStyle(
+                                            color: Colors.blue,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width / 1.5,
+                                      height: 1,
+                                      color: Colors.grey[700],
                                     )
                                   ],
                                 ),
+                        Visibility(visible:commentshow,child: commetist(postname,widget.ownerimg??" ")),
                               ],
                             )
                           ],
@@ -433,123 +448,140 @@ class _StreamCommentScreenState extends State<StreamCommentScreen> {
     );
   }
 
-  Widget commetist() {
-    return Row(
+  Widget commetist(String name,String img) {
+    return Column(
       children: [
-        SizedBox(
-          width: 15,
-        ),
-        Container(
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-          ),
-          child: Image.network(
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png",
-            width: 50,
-            height: 50,
-            fit: BoxFit.fill,
-          ),
-        ),
-        SizedBox(
-          width: 20,
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+        InkWell(onTap:(){
+          setState(() {
+           commentshow=false;
+          });
+        },child: CustomText(text:"Hide Replies",color: Colors.blue,)),
+        Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              " Omer Mohamed Elmawy",
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
             SizedBox(
-              height: 4,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width / 1.5,
-              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-              decoration: BoxDecoration(
-                  color: Colors.blueGrey[300],
-                  borderRadius: BorderRadius.circular(10)),
-              child: Text(
-                "Nice",
-                style: TextStyle(color: Colors.blueGrey[900]),
-              ),
-            ),
-            SizedBox(
-              height: 10,
+              width: 15,
             ),
             Row(
               children: [
-                SvgPicture.asset(
-                  "assets/profile_icons/like.svg",
-                  semanticsLabel: 'Acme Logo',
-                  color: Colors.grey[100],
-                  width: 20,
-                  height: 20,
-                ),
-                const SizedBox(
-                  width: 8,
-                ),
-                Text(
-                  "2",
-                  style: TextStyle(color: Colors.grey[100]),
-                ),
-                const SizedBox(
-                  width: 18,
-                ),
-                SvgPicture.asset(
-                  "assets/profile_icons/share.svg",
-                  semanticsLabel: 'Acme Logo',
-                  color: Colors.blue,
-                  width: 25,
-                  height: 25,
-                ),
-                const SizedBox(
-                  width: 70,
-                ),
-                Text(
-                  " snap",
-                  style: TextStyle(color: Colors.grey[700], fontSize: 12),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Row(
-              children: [
-                Text(
-                  "1",
-                  style: TextStyle(color: Colors.blue, fontSize: 13),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
                 Container(
                   clipBehavior: Clip.antiAliasWithSaveLayer,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                   ),
-                  child: CircleAvatar(
-                    backgroundImage: CachedNetworkImageProvider(img),
+                  child: Image.network(
+                  img,
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style:
+                      TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 4,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width / 1.5,
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                  decoration: BoxDecoration(
+                      color: Colors.blueGrey[300],
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Text(
+                    "Nice",
+                    style: TextStyle(color: Colors.blueGrey[900]),
                   ),
                 ),
                 SizedBox(
-                  width: 15,
+                  height: 10,
                 ),
-                Text(
-                  "Show replies",
-                  style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold),
-                )
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    // SvgPicture.asset(
+                    //   "assets/profile_icons/like.svg",
+                    //   semanticsLabel: 'Acme Logo',
+                    //   color: Colors.grey[100],
+                    //   width: 20,
+                    //   height: 20,
+                    // ),
+                    // const SizedBox(
+                    //   width: 8,
+                    // ),
+                    // Text(
+                    //   "2",
+                    //   style: TextStyle(color: Colors.grey[100]),
+                    // ),
+                    // const SizedBox(
+                    //   width: 18,
+                    // ),
+                    // SvgPicture.asset(
+                    //   "assets/profile_icons/share.svg",
+                    //   semanticsLabel: 'Acme Logo',
+                    //   color: Colors.blue,
+                    //   width: 25,
+                    //   height: 25,
+                    // ),
+                    // const SizedBox(
+                    //   width: 70,
+                    // ),
+                    Text(" day"
+                   // " ${ timeago.format((snapshot.data?.docs[index]["time"]).toDate())}"
+                      , style: TextStyle(color: Colors.grey[700], fontSize: 12),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(width: MediaQuery.of(context).size.width / 1.5,
+                height: 2,color: Colors.grey[700],),
+                // Row(
+                //   children: [
+                //     Text(
+                //       "1",
+                //       style: TextStyle(color: Colors.blue, fontSize: 13),
+                //     ),
+                //     SizedBox(
+                //       width: 5,
+                //     ),
+                //     Container(
+                //       clipBehavior: Clip.antiAliasWithSaveLayer,
+                //       decoration: const BoxDecoration(
+                //         shape: BoxShape.circle,
+                //       ),
+                //       child: CircleAvatar(
+                //         backgroundImage: CachedNetworkImageProvider(img),
+                //       ),
+                //     ),
+                //     SizedBox(
+                //       width: 15,
+                //     ),
+                //     Text(
+                //       "Show replies",
+                //       style: TextStyle(
+                //           color: Colors.blue,
+                //           fontSize: 13,
+                //           fontWeight: FontWeight.bold),
+                //     )
+                //   ],
+                // ),
               ],
-            ),
+            )
           ],
-        )
+        ),
       ],
     );
   }
@@ -560,30 +592,47 @@ class _StreamCommentScreenState extends State<StreamCommentScreen> {
   String username = "";
   String img = "";
   List<String> docc = [];
-
+  List <Reply>replies = [];
   databasecomment(BuildContext context) async {
     final user = Provider.of<UserProvider>(context, listen: false);
+    Replyinfo replyinfo=Replyinfo(user.user.uId, user.user.photo, user.user.name);
+    Reply reply=Reply("reply", DateTime.now(), replyinfo);
+    replies.add(reply);
     CollectionReference comment = _fireStore
         // .collection("commentsstream")
         // .doc(widget.streamid)
         .collection("Comments");
-    //_fireStore.collection("commentsuer").doc("widget.postid").collection("comment");
-    // _fireStore.collection("Posts").get().then((value) => {
-    //   for(int i=0;i<value.docs.length;i++)
-    //   {
-    //     idd=value.docs[i].data()["id"]
-    //   },
-    // value.docs.forEach((element) {
-    //         idd = element.data()["id"];
-    //         username = element.data()["nameii"];
-    //         img= element.data()["profileImg"];
+    DocumentReference documentReference=comment.doc();
+if(commentshow==false){
     comment.add({
       'time': DateTime.now(),
-      'id':comment.doc().id,
+      'id':documentReference.id,
       'message': messagetext,
       "relatedpost": widget.streamid,
+      "replies":[],
       "username": user.user.name,
       "img": user.user.photo
     });
   }
+
+  else{
+
+  comment.doc(documentReference.id).update({"replies":FieldValue.arrayUnion(replies)});
+}
+  }
+}
+class Replyinfo{
+  final String? userID;
+  final String? userImg;
+  final String? userName;
+
+  Replyinfo(this.userID, this.userImg, this.userName);
+
+}
+class Reply{
+  final String? reply;
+  final DateTime? replytime;
+  final Replyinfo? replyinfo;
+  Reply(this.reply, this.replytime, this.replyinfo);
+
 }

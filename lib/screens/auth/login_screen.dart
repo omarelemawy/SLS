@@ -200,9 +200,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(
                         height: 30,
                       ),
-                      state is LoginLoadingState
-                          ? const Center(child: CircularProgressIndicator())
-                          : CustomButton(
+                      // state is LoginLoadingState
+                      //     ? const Center(child: CircularProgressIndicator())
+                      //     :
+
+                      CustomButton(
                               () {
                                 if (_formKeySingIn.currentState!.validate()) {
                                   // if (Provider.of<AdminMode>(context,

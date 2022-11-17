@@ -373,7 +373,7 @@ String userimg="";
             Text(
               " Omer Mohamed Elmawy",
               style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  TextStyle(color: Colors.green ,fontWeight: FontWeight.bold),
             ),
             SizedBox(
               height: 4,

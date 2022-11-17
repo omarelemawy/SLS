@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hex_color/flutter_hex_color.dart';
+import 'package:like_button/like_button.dart';
 import 'package:provider/provider.dart';
 import 'package:sls/screens/searchpage.dart';
 import 'package:sls/screens/widget/notificationapi.dart';
@@ -14,6 +15,8 @@ import '../../model/user_model.dart';
 import '../../providers/user_provider.dart';
 import '../../resources/firestore_methods.dart';
 import '../../shared/netWork/local/cache_helper.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 import '../../utils/utils.dart';
 import '../account/account_screen.dart';
 import '../auth/first_screen.dart';
@@ -34,9 +37,10 @@ import 'add_post.dart';
 
 class HomeScreen extends StatefulWidget {
   static String id = "home";
+  String ? userid;
   bool broadcast;
 
-  HomeScreen({this.broadcast = false});
+  HomeScreen({this.broadcast = false,this.userid=""});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -44,6 +48,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
+  LocalNotificationService localNotificationService=LocalNotificationService();
+  bool isliked=false;
+  int likecount=0;
   // UserModel user=UserModel();
   final _auth = FirebaseAuth.instance;
   late User signInUser;
@@ -59,6 +66,32 @@ class _HomeScreenState extends State<HomeScreen>
     } catch (e) {
       print(e);
     }
+  }
+  void requestpermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print('user granted permission');
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print('user granted provisional permission');
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print('user granted provisional permission');
+    }
+  }
+  storenotifcationtoken() async
+  {
+    String? token = await FirebaseMessaging.instance.getToken();
+    FirebaseFirestore.instance.collection("Users").doc(widget.userid).set(
+        {"token": token}, SetOptions(merge: true));
   }
   //  int index = 0;
   TabController? _tabController;
@@ -76,6 +109,8 @@ class _HomeScreenState extends State<HomeScreen>
     listenToNotification();
     super.initState();
     getCurrentUser();
+    requestpermission();
+    storenotifcationtoken();
     _tabController = TabController(length: 2, vsync: this);
     _tabController!.addListener(_handleTabSelection);
     debugPrint("${userr?.name}kjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
@@ -171,11 +206,12 @@ class _HomeScreenState extends State<HomeScreen>
                 },
                 child: InkWell(
                   onTap: () {
-                    CacheHelper.saveData(key: "uId", value: "");
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyCartScreen()),
-                        (route) => false);
+                    localNotificationService.sendnotifylistener("title", "body", "id");
+                    // CacheHelper.saveData(key: "uId", value: "");
+                    // Navigator.pushAndRemoveUntil(
+                    //     context,
+                    //     MaterialPageRoute(builder: (context) => MyCartScreen()),
+                    //     (route) => false);
                   },
                   child: const Icon(
                     Icons.shopping_cart,
@@ -221,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen>
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>  AccountScreen()));
+                          builder: (context) =>  AccountScreen(userid:widget.userid)));
                 },
                 child: // FutureBuilder<UserModel?>(
                     //     future: readUser(),
@@ -347,10 +383,40 @@ class _HomeScreenState extends State<HomeScreen>
                                     padding: const EdgeInsets.only(top: 100.0,left: 13),
                                     child: Align(
                                       alignment: Alignment.topLeft,
-                                      child: Row(
+                                      child: Column(
                                         children: [
-                                          CircleAvatar(child: Image.network(snapshot.data.docs[index]["profile"]),radius: 15,backgroundColor: Colors.grey,),
-                                           CustomText(text: snapshot.data.docs[index]["userName"],color: Colors.white,),
+                                          Row(
+                                            children: [
+                                              CircleAvatar(child: Image.network(snapshot.data.docs[index]["profile"]),radius: 15,backgroundColor: Colors.grey,),
+                                               CustomText(text: snapshot.data.docs[index]["userName"],color: Colors.white,),
+                                            ],
+                                          ),
+                                          SizedBox(height:5),
+                                          Row(children:[
+                                            LikeButton(
+                                              size: 20,
+                                              likeCount: likecount,
+                                              likeBuilder: (isLiked) {
+                                                final color = isliked
+                                                    ? Colors.red
+                                                    : Colors.grey;
+                                                return Icon(
+                                                  Icons.favorite,
+                                                  color: color,
+                                                  size: 20,
+                                                );
+                                              },
+                                              likeCountPadding: EdgeInsets
+                                                  .only(left: 12),
+                                              onTap: (isliked) async {
+                                                this.isliked =
+                                                !isliked;
+                                                likecount += this
+                                                    .isliked ? 1 : -1;
+                                                return !isliked;
+                                              },
+                                            ),
+                                          ]),
                                         ],
                                       ),
 

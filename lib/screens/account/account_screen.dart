@@ -25,8 +25,9 @@ import 'notifications_settings_screen.dart';
 
 class AccountScreen extends StatefulWidget {
   UserModel? usermodel;
+  final String? userid;
 
-   AccountScreen({Key? key}) : super(key: key);
+  AccountScreen({this.usermodel, this.userid});
 
   @override
   State<AccountScreen> createState() => _AccountScreenState();
@@ -35,6 +36,7 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   final _auth = FirebaseAuth.instance;
   User? signInUser;
+
   void getCurrentUser() {
     try {
       final user = _auth.currentUser;
@@ -46,6 +48,7 @@ class _AccountScreenState extends State<AccountScreen> {
       print(e);
     }
   }
+
   Future<UserModel> readUser() async {
     final docUser = FirebaseFirestore.instance
         .collection("Users")
@@ -64,26 +67,19 @@ class _AccountScreenState extends State<AccountScreen> {
     getCurrentUser();
   }
 
-
   @override
   Widget build(BuildContext context) {
-
-    final userperson = Provider
-        .of<UserProvider>(context)
-        .user;
+    final userperson = Provider.of<UserProvider>(context).user;
 
     final Stream<QuerySnapshot> _postStream =
-    FirebaseFirestore.instance.collection('Users').snapshots();
+        FirebaseFirestore.instance.collection('Users').snapshots();
     bool isseller = false;
-    String isadmin="";
-    return
-      BlocProvider(
+    String isadmin = "";
+    return BlocProvider(
         create: (context) => AccountCubit(),
         child: BlocConsumer<AccountCubit, AccountState>(
           listener: (context, state) {},
           builder: (context, state) {
-
-
             return Scaffold(
               backgroundColor: HexColor("#f7b6b8"),
               body: Column(
@@ -140,10 +136,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   Container(
                     color: Colors.blue,
                     height: 1,
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width / 1.2,
+                    width: MediaQuery.of(context).size.width / 1.2,
                   ),
                   Expanded(
                     child: SingleChildScrollView(
@@ -162,8 +155,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white),
                               ),
-                              trailing: Icon(
-                                  Icons.arrow_forward_ios_sharp,
+                              trailing: Icon(Icons.arrow_forward_ios_sharp,
                                   color: Colors.white),
                               onTap: () {
                                 Navigator.push(
@@ -184,8 +176,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white),
                               ),
-                              trailing: Icon(
-                                  Icons.arrow_forward_ios_sharp,
+                              trailing: Icon(Icons.arrow_forward_ios_sharp,
                                   color: Colors.white),
                               onTap: () {
                                 showModalBottomSheet(
@@ -193,27 +184,22 @@ class _AccountScreenState extends State<AccountScreen> {
                                     useRootNavigator: true,
                                     isScrollControlled: true,
                                     shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius
-                                          .vertical(
+                                      borderRadius: BorderRadius.vertical(
                                         top: Radius.circular(20),
                                       ),
                                     ),
-                                    clipBehavior:
-                                    Clip.antiAliasWithSaveLayer,
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
                                     builder: (context) {
                                       return Container(
                                           color: postColor,
-                                          height: MediaQuery
-                                              .of(context)
-                                              .size
-                                              .height -
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height -
                                               30,
-                                          padding: EdgeInsets.all(
-                                              10),
+                                          padding: EdgeInsets.all(10),
                                           child: EditProfileScreen(
-                                            currentid: userperson
-                                                .uId ??
-                                                "id is null",
+                                            currentid:
+                                                userperson.uId ?? "id is null",
                                           ));
                                     });
                               },
@@ -236,8 +222,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white),
                               ),
-                              trailing: Icon(
-                                  Icons.arrow_forward_ios_sharp,
+                              trailing: Icon(Icons.arrow_forward_ios_sharp,
                                   color: Colors.white),
                             ),
                             ListTile(
@@ -258,8 +243,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white),
                               ),
-                              trailing: Icon(
-                                  Icons.arrow_forward_ios_sharp,
+                              trailing: Icon(Icons.arrow_forward_ios_sharp,
                                   color: Colors.white),
                             ),
                             ListTile(
@@ -280,8 +264,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white),
                               ),
-                              trailing: Icon(
-                                  Icons.arrow_forward_ios_sharp,
+                              trailing: Icon(Icons.arrow_forward_ios_sharp,
                                   color: Colors.white),
                             ),
                             ListTile(
@@ -302,26 +285,22 @@ class _AccountScreenState extends State<AccountScreen> {
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white),
                               ),
-                              trailing: Icon(
-                                  Icons.arrow_forward_ios_sharp,
+                              trailing: Icon(Icons.arrow_forward_ios_sharp,
                                   color: Colors.white),
                             ),
                             SizedBox(
                               height: 10,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment
-                                  .center,
-                              crossAxisAlignment: CrossAxisAlignment
-                                  .center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Container(
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle),
+                                    decoration:
+                                        BoxDecoration(shape: BoxShape.circle),
                                     height: 40,
                                     width: 40,
-                                    clipBehavior:
-                                    Clip.antiAliasWithSaveLayer,
+                                    clipBehavior: Clip.antiAliasWithSaveLayer,
                                     child: Image.asset(
                                       "assets/german.jpg",
                                       fit: BoxFit.fill,
@@ -331,10 +310,8 @@ class _AccountScreenState extends State<AccountScreen> {
                                 ),
                                 Container(
                                   decoration:
-                                  BoxDecoration(
-                                      shape: BoxShape.circle),
-                                  clipBehavior: Clip
-                                      .antiAliasWithSaveLayer,
+                                      BoxDecoration(shape: BoxShape.circle),
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
                                   child: Flag.fromCode(
                                     FlagsCode.GB,
                                     height: 40,
@@ -350,69 +327,71 @@ class _AccountScreenState extends State<AccountScreen> {
                             Container(
                               color: Colors.blue,
                               height: 1,
-                              width:
-                              MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width / 1.2,
+                              width: MediaQuery.of(context).size.width / 1.2,
                             ),
                             SizedBox(
                               height: 20,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 50.0),
-                              child: CustomButton(
-                                    ()async {
-                                      final DocumentSnapshot getuserdoc= await FirebaseFirestore.instance.collection('Users')
-                                          .doc(_auth.currentUser?.uid).get();
-                                  //    bool isseller= getuserdoc['becomeaseller'];
-                                       isadmin= getuserdoc['role'];
-                                 // bool isseller = userperson.becomeaseller ?? true;
-                                  if (getuserdoc['role']== "seller")
-                                  {
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                Dashboardscreen(
-                                                  isseller: isseller,
-                                                  userid: userperson
-                                                      .uId ??
-                                                      "nullid",
-                                                  username: userperson
-                                                      .name ??
-                                                      "namee",
-                                                )),
-                                            (route) => false);
-                                  }else
-                                    {
-                                      if(getuserdoc['role'] == "superuser")
-                                      {
+                            InkWell(
+                              onTap: (){
+
+                              },
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 50.0),
+                                child: CustomButton(
+                                  () async {
+                                    final DocumentSnapshot getuserdoc =
+                                        await FirebaseFirestore.instance
+                                            .collection('Users')
+                                            .doc(_auth.currentUser?.uid??" ")
+                                            .get();
+                                    //    bool isseller= getuserdoc['becomeaseller'];
+                                    isadmin = getuserdoc['role'];
+                                    // bool isseller = userperson.becomeaseller ?? true;
+                                    if (getuserdoc['role'] == "user") {
+                                      await FirebaseFirestore.instance
+                                          .collection('Users')
+                                          .doc(_auth.currentUser?.uid??" ")
+                                          .set({"role": "PendingSeller"});
+                                    }
+                                    if (getuserdoc['role'] == "seller") {
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Dashboardscreen(
+                                                    isseller: isseller,
+                                                    userid: userperson.uId ??
+                                                        "nullid",
+                                                    username: userperson.name ??
+                                                        "namee",
+                                                  )),
+                                          (route) => false);
+                                    } else {
+                                      if (getuserdoc['role'] == "superuser") {
                                         Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     Dashboardscreen(
                                                       isseller: false,
-                                                      userid: userperson
-                                                          .uId ??
+                                                      userid: userperson.uId ??
                                                           "nullid",
-                                                      username: userperson
-                                                          .name ??
+                                                      username: userperson.name ??
                                                           "namee",
                                                     )),
-                                                (route) => false);
+                                            (route) => false);
                                       }
                                     }
-                                },
-                                color: Colors.deepPurple[900]!,
-                                height: 50,
-                                text:
-                                isadmin=="superuser"
-                                    ? "DASHBOARD"
-                                    : "Become A seller",
-                                textColor: Colors.white,
+                                  },
+                                  color: Colors.deepPurple[900]!,
+                                  height: 50,
+                                  text: isadmin == "superuser"
+                                      ? "DASHBOARD"
+                                      : "Become A seller",
+                                  textColor: Colors.white,
+                                ),
                               ),
                             ),
                             SizedBox(
@@ -420,20 +399,16 @@ class _AccountScreenState extends State<AccountScreen> {
                             ),
                             InkWell(
                               onTap: () {
-                                CacheHelper.saveData(
-                                    key: "uId", value: "");
+                                CacheHelper.saveData(key: "uId", value: "");
                                 Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            FirstScreen()),
-                                        (route) => false);
+                                        builder: (context) => FirstScreen()),
+                                    (route) => false);
                               },
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .center,
-                                crossAxisAlignment:
-                                CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: const [
                                   Icon(
                                     Icons.remove_circle_outline,
@@ -444,8 +419,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                   ),
                                   Text(
                                     "LOG OUT",
-                                    style: TextStyle(
-                                        color: Colors.red),
+                                    style: TextStyle(color: Colors.red),
                                   )
                                 ],
                               ),
@@ -460,25 +434,24 @@ class _AccountScreenState extends State<AccountScreen> {
                   )
                 ],
               ),
-    // StreamBuilder(
-    //               stream: _postStream,
-    //               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-    //                 if (!snapshot.hasData) {
-    //                   return Center(child: CircularProgressIndicator());
-    //                 }
-    //                 return ListView.separated(
-    //                   itemCount: 1,
-    //                   separatorBuilder: (BuildContext context, int index) {
-    //                     return Container();
-    //                   },
-    //                   itemBuilder: (BuildContext context, int index) {
-    //                     isseller = snapshot.data!.docs[index]["becomeaseller"];
-    //                     return
+              // StreamBuilder(
+              //               stream: _postStream,
+              //               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              //                 if (!snapshot.hasData) {
+              //                   return Center(child: CircularProgressIndicator());
+              //                 }
+              //                 return ListView.separated(
+              //                   itemCount: 1,
+              //                   separatorBuilder: (BuildContext context, int index) {
+              //                     return Container();
+              //                   },
+              //                   itemBuilder: (BuildContext context, int index) {
+              //                     isseller = snapshot.data!.docs[index]["becomeaseller"];
+              //                     return
 
-
-                  //     },
-                  //   );
-                  // }),
+              //     },
+              //   );
+              // }),
             );
             // } else {
             //   return Center(child: CircularProgressIndicator());
@@ -486,6 +459,4 @@ class _AccountScreenState extends State<AccountScreen> {
           },
         ));
   }
-
-
 }

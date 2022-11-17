@@ -122,8 +122,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   storenotifcationtoken() async
   {
     String? token = await FirebaseMessaging.instance.getToken();
-    FirebaseFirestore.instance.collection("Users").doc(
-        FirebaseAuth.instance.currentUser!.uid).set(
+    FirebaseFirestore.instance.collection("Users").doc(widget.id).set(
         {"token": token}, SetOptions(merge: true));
   }
 
@@ -133,6 +132,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   double size = 25.0;
   bool isliked = false;
   MediaSource? source;
+  bool isfollow=false;
   final _auth = FirebaseAuth.instance;
   List<String> followlist = [];
   List<String> likeslist = [];
@@ -1084,111 +1084,78 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                         ],
                                                       )),
                                                   const SizedBox(width: 60),
-                                                  followlist.contains(uId) ?
-                                                  GestureDetector(
-                                                    onTap: () async {
-                                                      FirebaseFirestore.instance
-                                                          .collection("Users")
-                                                          .doc(
-                                                          FirebaseAuth.instance
-                                                              .currentUser?.uid)
-                                                          .set({
-                                                        "following": FieldValue
-                                                            .arrayRemove([uId])
-                                                      }, SetOptions(
-                                                          merge: true));
-                                                      FirebaseFirestore.instance
-                                                          .collection("Users")
-                                                          .doc(uId
-                                                      )
-                                                          .set({
-                                                        "followers": FieldValue
-                                                            .arrayRemove([
-                                                          FirebaseAuth.instance
-                                                              .currentUser?.uid
-                                                        ])
-                                                      }, SetOptions(
-                                                          merge: true));
-                                                    },
-                                                    child: Container(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          vertical: 6,
-                                                          horizontal: 30),
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors
-                                                                .blue[900]!,
-                                                            width: 1.5),
-                                                        borderRadius: BorderRadius
-                                                            .circular(20),
-                                                      ),
-                                                      child: Text(
-                                                        "UnFollow",
-                                                        style: TextStyle(
-                                                            color: Colors
-                                                                .blue[900],
-                                                            fontSize: 14,
-                                                            fontWeight: FontWeight
-                                                                .w500),
-                                                      ),
+                                                  Container(
+                                                    padding: const EdgeInsets.symmetric(
+                                                        vertical: 6, horizontal: 30),
+                                                    decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: Colors.blue[900]!, width: 1.5),
+                                                      borderRadius: BorderRadius.circular(20),
                                                     ),
-                                                  ) :
-                                                  GestureDetector(
-                                                    onTap: () async {
-                                                      final DocumentSnapshot gettoken = await FirebaseFirestore
-                                                          .instance.collection(
-                                                          'Users')
-                                                          .doc(uId).get();
-                                                      //    bool isseller= getuserdoc['becomeaseller'];
-                                                      String tokenn = gettoken['token'];
-
-                                                      FirebaseFirestore.instance
-                                                          .collection("Users")
-                                                          .doc(
-                                                          FirebaseAuth.instance
-                                                              .currentUser?.uid)
-                                                          .set({
-                                                        "following": FieldValue
-                                                            .arrayUnion([uId])
-                                                      }, SetOptions(
-                                                          merge: true));
-                                                      FirebaseFirestore.instance
-                                                          .collection("Users")
-                                                          .doc(uId
-                                                      )
-                                                          .set({
-                                                        "followers": FieldValue
-                                                            .arrayUnion([
-                                                          FirebaseAuth.instance
-                                                              .currentUser?.uid
-                                                        ])
-                                                      }, SetOptions(
-                                                          merge: true));
-                                                      sendNotification(
-                                                          "follow", tokenn);
-                                                    },
-                                                    child: Container(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          vertical: 6,
-                                                          horizontal: 30),
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: Colors
-                                                                .blue[900]!,
-                                                            width: 1.5),
-                                                        borderRadius: BorderRadius
-                                                            .circular(20),
-                                                      ),
-                                                      child: Text(
-                                                        "UnFollow",
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        setState(() async {
+                                                          final userr = Provider.of<UserProvider>(
+                                                              context,
+                                                              listen: false);
+                                                          FirebaseFirestore.instance
+                                                              .collection("Notifications")
+                                                              .doc()
+                                                              .set({
+                                                            "data": "follow",
+                                                            "relatedinfo": {
+                                                              "postId": "",
+                                                              "orderNo": ''
+                                                            },
+                                                            "seen": false,
+                                                            "topic": "follow",
+                                                            "time": "${DateTime.now()}",
+                                                            "senderInfoo": {
+                                                              "userName": userperson.user.name ?? " ",
+                                                              "uid": userperson.user.uId ?? " ",
+                                                              "userImg": userperson.user.photo ?? " ",
+                                                            }
+                                                          });
+                                                          await service.showNotification(
+                                                              id: 0,
+                                                              title: 'follow ',
+                                                              body: '${userperson.user.name} follow you');
+                                                          isfollow = !isfollow;
+                                                          if (signInUser.uid !=
+                                                              snapshot.data?.docs[index]["uid"]) {
+                                                            isfollow
+                                                                ? followlist.add(signInUser.uid)
+                                                                : followlist.remove(signInUser.uid);
+                                                            _fireStore
+                                                                .collection("Users")
+                                                                .doc(snapshot.data?.docs[index]
+                                                            ["uid"])
+                                                                .update({"follower": followlist});
+                                                            isfollow
+                                                                ? followlist.add(snapshot
+                                                                .data?.docs[index]["uid"])
+                                                                : followlist.remove(snapshot
+                                                                .data?.docs[index]["uid"]);
+                                                            _fireStore
+                                                                .collection("Users")
+                                                                .doc(signInUser.uid)
+                                                                .update(
+                                                                {"following": followlist});
+                                                          }
+                                                        });
+                                                      },
+                                                      child: isfollow ?Text(
+                                                        "Unfollow",
                                                         style: TextStyle(
-                                                            color: Colors
-                                                                .blue[900],
+                                                            color: Colors.blue[900],
                                                             fontSize: 14,
-                                                            fontWeight: FontWeight
-                                                                .w500),
+                                                            fontWeight: FontWeight.w500),
+                                                      ):Text(
+                                                        "follow" ,
+                                                        style: TextStyle(
+                                                            color: Colors.blue[900],
+                                                            fontSize: 14,
+                                                            fontWeight: FontWeight.w500),
                                                       ),
                                                     ),
                                                   ),
@@ -1432,7 +1399,6 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                               ),
                             ),
                           ],
-
                         ),
                       ),
                     ],

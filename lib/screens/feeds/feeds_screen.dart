@@ -326,8 +326,14 @@ class _FeedsScreenState extends State<FeedsScreen> {
                                       }
                                     });
                                   },
-                                  child: Text(
-                                    isfollowing ? "follow" : "Unfollow",
+                                  child: isfollowing ?Text(
+                                     "Unfollow",
+                                    style: TextStyle(
+                                        color: Colors.blue[900],
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500),
+                                  ):Text(
+                                    "follow" ,
                                     style: TextStyle(
                                         color: Colors.blue[900],
                                         fontSize: 14,

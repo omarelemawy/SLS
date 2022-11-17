@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hex_color/flutter_hex_color.dart';
+import 'package:sls/screens/dashboard/dashboardscreen.dart';
 import '../../providers/user_provider.dart';
 import '../../shared/netWork/local/cache_helper.dart';
 import '../auth/bloc_auth/cubit.dart';
@@ -17,27 +18,40 @@ class memberrequestscreen extends StatefulWidget {
 class _memberrequestscreenstate extends State<memberrequestscreen> {
   @override
   Widget build(BuildContext context) {
-    final Stream<QuerySnapshot> _postStream =
-        FirebaseFirestore.instance.collection('Users').where("confirmState",isEqualTo: "pending").snapshots();
+    final Stream<QuerySnapshot> _postStream = FirebaseFirestore.instance
+        .collection('Users')
+        .where("confirmState", isEqualTo: "pending")
+        .snapshots();
     //String id = CacheHelper.getData(key: 'uId');
     return BlocProvider(
       create: (context) => RegisterCubit(),
       child: BlocConsumer<RegisterCubit, RegisterStates>(
         builder: (context, state) {
-          return StreamBuilder(
-              stream: _postStream,
-              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (!snapshot.hasData) {
-                  return CircularProgressIndicator();
-                }
-                return Container(
-                  color: Colors.indigo[700],
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: ListView.separated(
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return  AlertDialog(
+          return Scaffold(
+            appBar: AppBar(
+                leading: InkWell(
+                    onTap: () {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomeScreen()),
+                              (route) => false);
+                    },
+                    child: Icon(Icons.arrow_back, color: Colors.blue)),
+                title: Text("User request")),
+            body: StreamBuilder(
+                stream: _postStream,
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (!snapshot.hasData) {
+                    return CircularProgressIndicator();
+                  }
+                  return Container(
+                    color: Colors.indigo[700],
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: ListView.separated(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return AlertDialog(
                           backgroundColor: Colors.white,
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -99,7 +113,7 @@ class _memberrequestscreenstate extends State<memberrequestscreen> {
                                         .collection('Users')
                                         .doc(snapshot.data!.docs[index]["uId"])
                                         .update({
-                                      'isEmailVerification': true
+                                      'confirmState': 'confirmed'
                                     }).then((value) {
                                       Navigator.of(context).pop(false);
                                     });
@@ -125,10 +139,7 @@ class _memberrequestscreenstate extends State<memberrequestscreen> {
                                 ),
                                 CustomButton(
                                   () {
-                                    FirebaseFirestore.instance
-                                        .collection('Users')
-                                        .doc(snapshot.data!.docs[index]["uId"])
-                                        .delete();
+                                    Navigator.of(context).pop(false);
                                   },
                                   color: Colors.indigo,
                                   height: 50,
@@ -145,15 +156,15 @@ class _memberrequestscreenstate extends State<memberrequestscreen> {
                               height: 20,
                             )
                           ],
-                        );},
-
-
-                    separatorBuilder: (BuildContext context, int index) {
-                      return Container();
-                    },
-                  ),
-                );
-              });
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return Container();
+                      },
+                    ),
+                  );
+                }),
+          );
         },
         listener: (context, state) {
           if (state is CreateUserSuccessState) {

@@ -33,7 +33,7 @@ class _MessageTextFieldState extends State<MessageTextField> {
   void initState() {
     super.initState();
     focusNode.addListener(() {
-      if(focusNode.hasFocus){
+      if(focusNode.hasFocus ){
         setState(() {
           isEmojiVisible=false;
         });

@@ -63,6 +63,7 @@ dependencies:
   fluttertoast: ^8.0.9
   screenshot:
   firebase_core:
+
   #firebase_core_platform_interface: 4.5.1
   firebase_messaging: ^13.0.4
   video_player:

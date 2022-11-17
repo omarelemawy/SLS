@@ -1,7 +1,11 @@
+import 'dart:convert';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:http/http.dart'as http;
 
 class LocalNotificationService {
   LocalNotificationService();
@@ -102,4 +106,43 @@ class LocalNotificationService {
       onNotificationClick.add(payload);
     }
   }
+  var servertoken='AAAAf2taGu4:APA91bGfmilZZqCHktBHjWtO5R10bKfRuyJQ-ZN8iGbE7mWFCIugH8vZv3CCQF_8ji9PQ518QzDGTxfKxIVtZJpH8Teh0-7ZbKeLwEPqMR5EYcoQ7IwaG55weTRiIXvyQfkGR5ismmUE';
+  sendnotifylistener(String title,String body, String id)async
+  {
+    try{
+    String? token = await FirebaseMessaging.instance.getToken();
+   await http.post(
+     Uri.parse('http://fcm.googleapis.com/fcm/send'),
+     headers: <String,String>{
+       'Content_Type':'application/json',
+       'Authorization':'key=$servertoken',
+     },
+   body:jsonEncode(
+     <String,dynamic>{
+       'notification':<String,dynamic>{
+         'body':body.toString(),
+         'title':title.toString(),
+       },
+       'priority':'high',
+       'data':<String,dynamic>{
+         'click_action':'FLUTTER_NOTIFICATION_CLICK',
+         'id':id.toString(),
+         'body':body.toString(),
+         'title':title.toString(),
+       },
+       'to':token,
+
+     }
+   ) ,
+   );
+  }catch(e){print("${e.toString()}eroorrrrrrrrrrrrrrrrrrrr");}}
+  getmessage()
+  {
+    FirebaseMessaging.onMessage.listen((event) {
+      print("boduyyyyyyyyyyyyyyyyy${event.notification?.body}");
+      print("boduyyyyyyyyyyyyyyyyy${event.notification?.body}");
+      print("boduyyyyyyyyyyyyyyyyy${event.data['name']}");
+    });
+  }
+
 }

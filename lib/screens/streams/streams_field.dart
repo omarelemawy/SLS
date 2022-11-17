@@ -199,26 +199,65 @@ Future<List<String>>videos()async
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: InkWell(
-                            onTap:(){
-                              setState(()async {
-                                final userr = Provider.of<UserProvider>(context, listen: false);
-                                FirebaseFirestore.instance.collection("Notifications").doc().set({"data":"Has Followed You","relatedinfo":{"postId": "", "orderNo": ''},"seen": false,"topic": "follow","time": "${DateTime.now()}","senderInfoo":{"userName": user.user.name??" ", "uid": user.user.uId??" ", "userImg": user.user.photo??" ",}});
+                            onTap: () {
+                              setState(() async {
+                                final userr = Provider.of<UserProvider>(
+                                    context,
+                                    listen: false);
+                                FirebaseFirestore.instance
+                                    .collection("Notifications")
+                                    .doc()
+                                    .set({
+                                  "data": "follow",
+                                  "relatedinfo": {
+                                    "postId": "",
+                                    "orderNo": ''
+                                  },
+                                  "seen": false,
+                                  "topic": "follow",
+                                  "time": "${DateTime.now()}",
+                                  "senderInfoo": {
+                                    "userName": user.user.name ?? " ",
+                                    "uid": user.user.uId ?? " ",
+                                    "userImg": user.user.photo ?? " ",
+                                  }
+                                });
                                 await service.showNotification(
-                                    id:0 ,
-                                    title: 'Has Followed You ',
+                                    id: 0,
+                                    title: 'follow ',
                                     body: '${user.user.name} follow you');
-                                isfollowing =!isfollowing;
-                                if(signInUser?.uid!=snapshot.data?.docs[index]["uid"]){
-                                  isfollowing?followlist.add(signInUser?.uid??" "):followlist.remove(signInUser?.uid);
-                                  _fireStore.collection("Users").doc(snapshot.data?.docs[index]["uid"]).update(
-                                      {"follower":followlist});
-                                  isfollowing?followinglist.add(snapshot.data?.docs[index]["uid"]):followinglist.remove(snapshot.data?.docs[index]["uid"]);
-                                  _fireStore.collection("Users").doc(signInUser?.uid).update(
-                                      {"following":followinglist});}
+                                isfollowing = !isfollowing;
+                                if (signInUser?.uid !=
+                                    snapshot.data?.docs[index]["uid"]) {
+                                  isfollowing
+                                      ? followlist.add(signInUser?.uid??" ")
+                                      : followlist.remove(signInUser?.uid??" ");
+                                  _fireStore
+                                      .collection("Users")
+                                      .doc(snapshot.data?.docs[index]
+                                  ["uid"])
+                                      .update({"follower": followlist});
+                                  isfollowing
+                                      ? followinglist.add(snapshot
+                                      .data?.docs[index]["uid"])
+                                      : followinglist.remove(snapshot
+                                      .data?.docs[index]["uid"]);
+                                  _fireStore
+                                      .collection("Users")
+                                      .doc(signInUser?.uid??" ")
+                                      .update(
+                                      {"following": followinglist});
+                                }
                               });
                             },
-                            child: Text(
-                              "Follow",
+                            child: isfollowing ?Text(
+                              "Unfollow",
+                              style: TextStyle(
+                                  color: Colors.blue[900],
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500),
+                            ):Text(
+                              "follow" ,
                               style: TextStyle(
                                   color: Colors.blue[900],
                                   fontSize: 14,
