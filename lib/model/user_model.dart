@@ -11,13 +11,29 @@ class UserModel{
   String? photo;
   String ? confirmState;
   String? role;
-  //List <String>?followers;
-  //List <String>?following;
+  List <String>?followers;
+  List <String>?following;
   //List <String>?hiddenPosts;
   //List <String>?liveNotificationsBlackList;
 
-  UserModel({this.name, this.email, this.phone, this.uId, this.photo,this.confirmState,this.role,
+  UserModel({this.name, this.email, this.phone, this.uId, this.photo,this.confirmState,this.role,this.followers, this.following
    });
+
+  // factory UserModel.fromJson(Map<String, dynamic>? json) {
+  //   return UserModel(
+  //     name: json!["name"],
+  //     email: json["email"],
+  //     phone: json["phone"],
+  //     uId: json["uId"],
+  //     photo: json["photo"],
+  //     confirmState: json["confirmState"],
+  //     role: json["role"],
+  //     followers:
+  //         List.of(json["followers"]).map<String>((i) => json["followers"]).toList(),
+  //     following:
+  //         List.of(json["following"]).map<String>((i) => json["following"]).toList(),
+  //   );
+  // }
 
   UserModel.fromJson(Map<String,dynamic>? json){
     name=json!["userName"];
@@ -28,31 +44,31 @@ class UserModel{
     confirmState=json["confirmState"];
     role=json["role"];
 
-    //if (json['followers'] != null) {
-      //followers= [];
-    // }
-    // else{
-    //   followers =  [];
-    // }
-  //  if (json['following'] != null) {
-    //  following= [];
-    // }
-    // else{
-    //   following =  [];
-    // }
-    // if (json['hiddenPosts'] != null) {
-    //   hiddenPosts= json['hiddenPosts'];
-    // }
-    // else{
-     // hiddenPosts =  [];
-    //}
-   // if (json['liveNotificationsBlackList'] != null) {
-   //   liveNotificationsBlackList= [];
-    // }
-    // else{
-    //   liveNotificationsBlackList =  [];
-    // }
-  }
+    if (json['followers'] != null) {
+      followers= [];
+    }
+    else{
+      followers =  [];
+    }
+   if (json['following'] != null) {
+     following= [];
+    }
+    else{
+      following =  [];
+    }}
+  //   // if (json['hiddenPosts'] != null) {
+  //   //   hiddenPosts= json['hiddenPosts'];
+  //   // }
+  //   // else{
+  //    // hiddenPosts =  [];
+  //   //}
+  //  // if (json['liveNotificationsBlackList'] != null) {
+  //  //   liveNotificationsBlackList= [];
+  //   // }
+  //   // else{
+  //   //   liveNotificationsBlackList =  [];
+  //   // }
+  // }
   Map<String,dynamic> toMap(){
     return {
       "userName":name,
@@ -61,8 +77,8 @@ class UserModel{
       "profileImg":photo,
       "confirmState":confirmState,
       "role":role,
-      //"followers":followers,
-      //"following":following,
+      "followers":followers,
+      "following":following,
       //"hiddenPosts":hiddenPosts,
       //"liveNotificationsBlackList":liveNotificationsBlackList,
     };

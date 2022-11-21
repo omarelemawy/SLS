@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,23 +17,24 @@ class Chatscreen extends StatefulWidget {
   String friendid;
   String friendname;
   String friendimage;
+  String docid;
   UserModel user;
 
   Chatscreen(
       {
-
         required this.user,
         required this.friendid,
-      required this.friendimage,
-      required this.friendname,});
+        required this.friendimage,
+        this.docid="",
+        required this.friendname,});
 
   @override
   State<StatefulWidget> createState() => chatscreenstate();
 }
 
 class chatscreenstate extends State<Chatscreen> {
-  DocumentReference doc = FirebaseFirestore.instance.collection('chatChannels').doc();
 
+  File? _file;
   @override
   Widget build(BuildContext context) {
     final userperson=Provider.of<UserProvider>(context, listen: false);
@@ -70,7 +73,7 @@ class chatscreenstate extends State<Chatscreen> {
                 )
             ),
             child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection("chatChannels").doc(doc.id).collection('messages').orderBy("time",descending: true).snapshots(),
+                stream: FirebaseFirestore.instance.collection("chatChannels").doc(widget.docid).collection('messages').snapshots(),
                 builder: (context,AsyncSnapshot snapshot){
                   if(snapshot.hasData){
                     if(snapshot.data.docs.length < 1){
@@ -93,7 +96,7 @@ class chatscreenstate extends State<Chatscreen> {
                   );
                 }),
           )),
-          MessageTextField(doc.id,userperson.user.uId??" ", widget.friendid,widget.friendimage,userperson.user.name??"",userperson.user.photo??""),
+          MessageTextField(widget.docid,userperson.user.uId??" ", widget.friendid,widget.friendimage,userperson.user.name??"",userperson.user.photo??"",_file??File("")),
         ],
       ),
     );

@@ -84,6 +84,7 @@ int count=0;
         //   else
         //     {
         doc.set({
+          "comment":"${0}",
           "id": doc.id,
           "userName": user.user.name,
           "uid": user.user.uId,

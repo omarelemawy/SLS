@@ -115,6 +115,7 @@ class _memberrequestscreenstate extends State<memberrequestscreen> {
                                         .update({
                                       'confirmState': 'confirmed'
                                     }).then((value) {
+
                                       Navigator.of(context).pop(false);
                                     });
                                     // RegisterCubit.get(context).singUpToFireBase(

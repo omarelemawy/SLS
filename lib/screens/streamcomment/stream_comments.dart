@@ -18,8 +18,9 @@ class StreamCommentScreen extends StatefulWidget {
   String? ownerid;
   String? ownername;
   String? ownerimg;
+  String? commentlen;
   StreamCommentScreen(BuildContext context,
-      {this.streamid, this.ownerid, this.ownername, this.ownerimg});
+      {this.streamid, this.ownerid, this.ownername, this.ownerimg,this.commentlen});
 
   @override
   State<StreamCommentScreen> createState() => _StreamCommentScreenState();
@@ -39,6 +40,7 @@ class _StreamCommentScreenState extends State<StreamCommentScreen> {
   bool isdesending = false;
   bool commentshow=false;
   bool commenthide=false;
+  int commentlength=0;
   void clear() {
     textfield.clear();
   }
@@ -47,6 +49,11 @@ class _StreamCommentScreenState extends State<StreamCommentScreen> {
   void initState() {
     super.initState();
     getCurrentUser();
+  }
+
+  updatecommentlen(String postid,int len)async{
+   await  FirebaseFirestore.instance.collection('Post').doc(postid).update({"comment":"${len}"});
+
   }
 
   String postname = "";
@@ -64,6 +71,7 @@ class _StreamCommentScreenState extends State<StreamCommentScreen> {
   }
   @override
   Widget build(BuildContext context) {
+
     final user = Provider.of<UserProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: postColor,
@@ -129,11 +137,7 @@ class _StreamCommentScreenState extends State<StreamCommentScreen> {
             ],
           )),
       body: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection("Comments")
-              .where("relatedpost", isEqualTo: widget.streamid)
-              .orderBy("time")
-              .snapshots(),
+          stream: FirebaseFirestore.instance.collection("Comments").where("relatedpost", isEqualTo: widget.streamid).snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return Stack(children: [
@@ -196,6 +200,7 @@ class _StreamCommentScreenState extends State<StreamCommentScreen> {
                 ),
               ]);
             }
+
             return Stack(
               children: [
                 Column(
@@ -209,7 +214,7 @@ class _StreamCommentScreenState extends State<StreamCommentScreen> {
                           child: Row(
                             children: [
                               Text(
-                                "${CacheHelper.getInt(key:"commentpost")} Comments",
+                                "${widget.commentlen} Comments",
                                 style: TextStyle(color: Colors.white),
                               ),
                             ],
@@ -256,6 +261,11 @@ class _StreamCommentScreenState extends State<StreamCommentScreen> {
                   padding: const EdgeInsets.only(top: 40.0),
                   child: ListView.separated(
                       separatorBuilder: (BuildContext context, int index) {
+                        commentlength=snapshot.data!.docs.length;
+                        FirebaseFirestore.instance.collection('Post').doc(snapshot.data!.docs[index]["relatedpost"]).update({"comment":"${commentlength}"});
+
+                        CacheHelper.setInt(key: "comlen", value:snapshot.data!.docs.length );
+
                         //postid = snapshot.data!.docs[index]["postid"];
                         postname = snapshot.data!.docs[index]["username"];
                         return const SizedBox(
@@ -415,11 +425,8 @@ class _StreamCommentScreenState extends State<StreamCommentScreen> {
                                         fit: BoxFit.fill,
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 15,
-                                    ),
-                                    Visibility(
-                                       visible:!commentshow,
+                                    SizedBox(width: 15,),
+                                    Visibility(visible:!commentshow,
                                       child: Text(
                                         "Show replies",
                                         style: TextStyle(

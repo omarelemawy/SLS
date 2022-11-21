@@ -128,7 +128,7 @@ Future<List<String>>videos()async
         return ListView.separated(
           itemCount: snapshot.data?.docs.length ?? 0,
           itemBuilder: (BuildContext context, int index) {
-          //  String channelId = snapshot.data!.docs[index]["channelId"];
+            String id = snapshot.data!.docs[index]["uid"];
            // Timestamp timestamp = snapshot.data?.docs[index]["time"];
             Timestamp timestamp = snapshot.data!.docs[index]["context"]["duration"];
                  return Material(
@@ -142,7 +142,13 @@ Future<List<String>>videos()async
                     Row(
                       children: [
                         InkWell(
-                            onTap: () {
+                            onTap: ()async {
+                              DocumentSnapshot snap =await FirebaseFirestore.instance
+                                  .collection('Users')
+                                  .doc(id)
+                                  .get() as DocumentSnapshot<Object?>;
+                              List followers=snap["followers"];
+                              List following=snap["following"];
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -153,7 +159,9 @@ Future<List<String>>videos()async
                                           id: snapshot.data!.docs[index]
                                               ["uid"],
                                         profileimage: snapshot.data!.docs[index]
-                                        ["profile"],user: widget.user??UserModel(),)));
+                                        ["profile"],user: widget.user??UserModel(),
+                                          followerslen:followers.length,
+                                          followinglen:following.length)));
                             },
                             child: Row(
                               children: [
@@ -423,7 +431,7 @@ Future<List<String>>videos()async
                                           MediaQuery.of(context).size.height -
                                               30,
                                       padding: EdgeInsets.all(10),
-                                      child: StreamCommentScreen(context,streamid:snapshot.data!.docs[index]["id"],ownerid:signInUser?.uid??" ",ownername:signInUser?.displayName??" ",ownerimg:snapshot.data!.docs[index]["profile"] ,),);
+                                      child: StreamCommentScreen(context,streamid:snapshot.data!.docs[index]["id"],ownerid:signInUser?.uid??" ",ownername:signInUser?.displayName??" ",ownerimg:snapshot.data!.docs[index]["profile"] ,commentlen:snapshot.data?.docs[index]["comment"]),);
                                 });
                           },
                           child: Row(
@@ -439,7 +447,7 @@ Future<List<String>>videos()async
                                 width: 10,
                               ),
                               Text(
-                                "3",
+                                "${snapshot.data?.docs[index]["comment"]}",
                                 style: TextStyle(color: Colors.black),
                               ),
                             ],

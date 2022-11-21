@@ -61,6 +61,8 @@ class RegisterCubit extends Cubit<RegisterStates> {
             uId: uId,
             confirmState: confirmed,
             role: role,
+            followers: [],
+          following: []
         );
         FirebaseFirestore.instance
             .collection('Users')

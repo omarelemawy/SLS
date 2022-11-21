@@ -186,7 +186,7 @@ class _FeedsScreenState extends State<FeedsScreen> {
             );
           }
           return ListView.separated(
-            itemCount: snapshot.data?.docs.length??0,
+            itemCount: snapshot.data?.docs.length ?? 0,
             itemBuilder: (BuildContext context, int index) {
               Timestamp timestamp = snapshot.data?.docs[index]["time"];
               postid = snapshot.data?.docs[index].id ?? " ";
@@ -208,22 +208,40 @@ class _FeedsScreenState extends State<FeedsScreen> {
                           child: Row(
                             children: [
                               InkWell(
-                                  onTap: () {
+                                  onTap: () async {
+                                    // DocumentSnapshot snap =
+                                    //     await FirebaseFirestore
+                                    //         .instance
+                                    //         .collection('Users')
+                                    //         .doc(snapshot.data!.docs[index]
+                                    //             ["uid"])
+                                    //         .get() as DocumentSnapshot<Object?>;
+                                    // List followers = snap["followers"];
+                                    // List following = snap["following"];
+                                    final DocumentSnapshot getuserdoc= await FirebaseFirestore.instance.collection('Users')
+                                        .doc(snapshot.data!.docs[index]["uid"]).get();
+                                   List followerslenn= getuserdoc['followers'];
+                                   List followinglenn= getuserdoc['following'];
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 UserProfileScreen(
-                                                    name: snapshot.data!.docs[
-                                                        index]["userName"],
-                                                    profileimage:
-                                                        snapshot.data?.docs[
-                                                                    index]
-                                                                ["profile"] ??
-                                                            "",
+                                                    name: snapshot
+                                                            .data!.docs[index]
+                                                        ["userName"],
+                                                    profileimage: snapshot.data
+                                                                ?.docs[index]
+                                                            ["profile"] ??
+                                                        "",
                                                     id: snapshot.data!
-                                                        .docs[index]["uid"],user:widget.user
-                                                    )));
+                                                        .docs[index]["uid"],
+                                                    user: widget.user,
+                                                    followerslen:
+                                                    followerslenn.length,
+                                                    followinglen:
+                                                    followinglenn.length
+                                                )));
                                   },
                                   child: Row(
                                     children: [
@@ -326,19 +344,21 @@ class _FeedsScreenState extends State<FeedsScreen> {
                                       }
                                     });
                                   },
-                                  child: isfollowing ?Text(
-                                     "Unfollow",
-                                    style: TextStyle(
-                                        color: Colors.blue[900],
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500),
-                                  ):Text(
-                                    "follow" ,
-                                    style: TextStyle(
-                                        color: Colors.blue[900],
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500),
-                                  ),
+                                  child: isfollowing
+                                      ? Text(
+                                          "Unfollow",
+                                          style: TextStyle(
+                                              color: Colors.blue[900],
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500),
+                                        )
+                                      : Text(
+                                          "follow",
+                                          style: TextStyle(
+                                              color: Colors.blue[900],
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500),
+                                        ),
                                 ),
                               ),
                               const Spacer(),
@@ -575,20 +595,21 @@ class _FeedsScreenState extends State<FeedsScreen> {
                                       .update({"likes": likeslist});
                                 });
                               },
-                              child:isliked? SvgPicture.asset(
-                                "assets/profile_icons/like.svg",
-                                semanticsLabel: 'Acme Logo',
-                                color:  Colors.grey,
-                                width: size,
-                                height: size,
-                              ):
-                              SvgPicture.asset(
-                                "assets/profile_icons/like.svg",
-                                semanticsLabel: 'Acme Logo',
-                                color:  Colors.blue ,
-                                width: size,
-                                height: size,
-                              ),
+                              child: isliked
+                                  ? SvgPicture.asset(
+                                      "assets/profile_icons/like.svg",
+                                      semanticsLabel: 'Acme Logo',
+                                      color: Colors.grey,
+                                      width: size,
+                                      height: size,
+                                    )
+                                  : SvgPicture.asset(
+                                      "assets/profile_icons/like.svg",
+                                      semanticsLabel: 'Acme Logo',
+                                      color: Colors.blue,
+                                      width: size,
+                                      height: size,
+                                    ),
                             ),
                             Text(
                                 "${snapshot.data?.docs[index]["likes"].length}"),
@@ -606,14 +627,17 @@ class _FeedsScreenState extends State<FeedsScreen> {
                             InkWell(
                               onTap: () {
                                 Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => StreamCommentScreen(
-                                          context,
-                                        streamid: postid,
-                                          ownerid: signInUser.uid,
-                                          ownername: user.user.name,ownerimg: snapshot.data?.docs[index]["profile"],),
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => StreamCommentScreen(
+                                      context,
+                                      streamid: postid,
+                                      ownerid: signInUser.uid,
+                                      ownername: user.user.name,
+                                      ownerimg: snapshot.data?.docs[index]
+                                          ["profile"],commentlen:snapshot.data?.docs[index]["comment"]
                                     ),
+                                  ),
                                 );
                               },
                               child: Row(
@@ -629,7 +653,7 @@ class _FeedsScreenState extends State<FeedsScreen> {
                                     width: 10,
                                   ),
                                   Text(
-                                    '2',
+                                    "${snapshot.data?.docs[index]["comment"]}",
                                     style: TextStyle(color: Colors.black),
                                   ),
                                 ],

@@ -454,7 +454,7 @@ class AddPostState extends State<AddPost> {
               doc.set({
 
                 "id": doc.id,
-                "comment":'${CacheHelper.getInt(key:"commentpost")}',
+                "comment":'${0}',
                 "likes": [],
                 "time": DateTime.now(),
                 "img":value,

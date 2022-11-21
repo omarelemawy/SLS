@@ -39,9 +39,11 @@ class UserProfileScreen extends StatefulWidget {
   String name, id;
   String profileimage;
   UserModel user;
+  int followerslen;
+  int followinglen;
 
   UserProfileScreen(
-      { this.name = "", this.profileimage = " ", this.id = "",required this.user });
+      { this.name = "", this.profileimage = " ", this.id = "", required this.user,this.followerslen=0,this.followinglen=0 });
 
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
@@ -73,6 +75,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   void _handleTabSelection() {
     setState(() {});
   }
+
 
   @override
   void initState() {
@@ -132,7 +135,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   double size = 25.0;
   bool isliked = false;
   MediaSource? source;
-  bool isfollow=false;
+  bool isfollow = false;
   final _auth = FirebaseAuth.instance;
   List<String> followlist = [];
   List<String> likeslist = [];
@@ -174,10 +177,23 @@ class _UserProfileScreenState extends State<UserProfileScreen>
   }
 
 
+  Future<bool> checkIfDocExists(String docId) async {
+    try {
+      // Get reference to Firestore collection
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      await FirebaseFirestore.instance.collection("chatChannels")
+          .doc(docId)
+          .get();
+      return documentSnapshot.exists;
+    }
+    catch (e) {
+      throw e;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final userperson=Provider.of<UserProvider>(context, listen: false);
+    final userperson = Provider.of<UserProvider>(context, listen: false);
     FirebaseFirestore.instance
         .collection("Users")
         .doc()
@@ -249,9 +265,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
           const SizedBox(width: 10,),
           InkWell(
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(
-                        builder: (context) => NotificationScreen()));
+                Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => NotificationScreen()));
               },
               child: const Icon(
                 Icons.notifications_none, color: Colors.white, size: 35,)),
@@ -270,8 +285,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                     ),
-                    child: Image.network(
-                      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png"
+                    child: Image.network(widget.profileimage
                       , errorBuilder: (c, d, s) {
                       return Container(
                         height: 20,
@@ -342,7 +356,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                   style: TextStyle(
                                                       color: Colors.white
                                                   ),),
-                                                Text(" 8", style: TextStyle(
+                                                Text("${widget.followerslen}", style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.white),),
                                                 const SizedBox(width: 40,),
@@ -356,7 +370,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                   style: TextStyle(
                                                       color: Colors.white
                                                   ),),
-                                                Text(" 6", style: TextStyle(
+                                                Text("${widget.followinglen}", style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.white),),
                                               ],
@@ -393,29 +407,94 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                 ),
                                                 SizedBox(width: 20,),
                                                 Visibility(
-                                                  visible: widget.id !=
-                                                      loggeduser?.uid,
+                                                  visible: widget.id != loggeduser?.uid,
                                                   child: GestureDetector(
                                                     onTap: () async {
+                                                      if (widget.id != loggeduser?.uid) {
+                                                        DocumentReference doc = FirebaseFirestore.instance
+                                                            .collection('chatChannels')
+                                                            .doc();
+                                                        bool exist = await checkIfDocExists(
+                                                            '6UGG5SZqv1AgYl9OGFGf');
+                                                        // DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+                                                        // await FirebaseFirestore.instance.collection("chatChannels").doc(doc.id).get();
+                                                        if (exist) {
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (
+                                                                      context) =>
+                                                                      Chatscreen(
 
-                                                      if (widget.id !=
-                                                          loggeduser?.uid) {
+                                                                        friendname: widget
+                                                                            .name,
+                                                                        friendimage: widget
+                                                                            .profileimage,
+                                                                        user: userr ??
+                                                                            UserModel(),
+                                                                        friendid: widget
+                                                                            .id,
+                                                                        docid: doc
+                                                                            .id,
+                                                                      )));
+                                                          ScaffoldMessenger.of(
+                                                              context)
+                                                              .showSnackBar(
+                                                              SnackBar(
+                                                                content: Text(
+                                                                  "document exist",
+                                                                  style: const TextStyle(
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                                duration: const Duration(
+                                                                    seconds: 3),
+                                                                backgroundColor: Colors
+                                                                    .grey,
+                                                              ));
+                                                        }
+                                                        else {
+                                                          doc.set({
+                                                            "userIds": [
+                                                              widget.id,
+                                                              userperson.user
+                                                                  .uId ?? " "
+                                                            ]
+                                                          });
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (
+                                                                      context) =>
+                                                                      Chatscreen(
 
-                                                       // doc.set({
-                                                       //    "userIds": [widget.id,userperson?.user.uId??" "]
-                                                       //  });
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder: (
-                                                                    context) =>
-                                                                    Chatscreen(
-
-                                                                      friendname: widget.name,
-                                                                      friendimage: widget.profileimage,
-                                                                      user: userr ?? UserModel(),
-                                                                      friendid: widget.id,
-                                                                    )));
+                                                                        friendname: widget
+                                                                            .name,
+                                                                        friendimage: widget
+                                                                            .profileimage,
+                                                                        user: userr ??
+                                                                            UserModel(),
+                                                                        friendid: widget
+                                                                            .id,
+                                                                        docid: doc
+                                                                            .id,
+                                                                      )));
+                                                          ScaffoldMessenger.of(
+                                                              context)
+                                                              .showSnackBar(
+                                                              SnackBar(
+                                                                content: Text(
+                                                                  "document doesn't exist",
+                                                                  style: const TextStyle(
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                                duration: const Duration(
+                                                                    seconds: 3),
+                                                                backgroundColor: Colors
+                                                                    .grey,
+                                                              ));
+                                                        }
                                                       }
                                                     },
                                                     child: Container(
@@ -540,19 +619,21 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                                           context) =>
                                                                           UserProfileScreen(
 
-                                                                            name: snapshot
-                                                                                .data!
-                                                                                .docs[index]
-                                                                            ["userName"],
-                                                                            profileimage: snapshot
-                                                                                .data
-                                                                                ?.docs[index]
-                                                                            ["profile"] ??
-                                                                                "",
-                                                                            id: snapshot
-                                                                                .data!
-                                                                                .docs[index]
-                                                                            ["uid"],user:widget.user)));
+                                                                              name: snapshot
+                                                                                  .data!
+                                                                                  .docs[index]
+                                                                              ["userName"],
+                                                                              profileimage: snapshot
+                                                                                  .data
+                                                                                  ?.docs[index]
+                                                                              ["profile"] ??
+                                                                                  "",
+                                                                              id: snapshot
+                                                                                  .data!
+                                                                                  .docs[index]
+                                                                              ["uid"],
+                                                                              user: widget
+                                                                                  .user)));
                                                             },
                                                             child: Row(
                                                               children: [
@@ -1026,14 +1107,16 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                                 builder: (
                                                                     context) =>
                                                                     UserProfileScreen(
-                                                                        name: snapshot
-                                                                            .data!
-                                                                            .docs[index]
-                                                                        ["userName"],
-                                                                        id: snapshot
-                                                                            .data!
-                                                                            .docs[index]
-                                                                        ["uid"],user: widget.user,)));
+                                                                      name: snapshot
+                                                                          .data!
+                                                                          .docs[index]
+                                                                      ["userName"],
+                                                                      id: snapshot
+                                                                          .data!
+                                                                          .docs[index]
+                                                                      ["uid"],
+                                                                      user: widget
+                                                                          .user,)));
                                                       },
                                                       child: Row(
                                                         children: [
@@ -1085,21 +1168,29 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                       )),
                                                   const SizedBox(width: 60),
                                                   Container(
-                                                    padding: const EdgeInsets.symmetric(
-                                                        vertical: 6, horizontal: 30),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 6,
+                                                        horizontal: 30),
                                                     decoration: BoxDecoration(
                                                       border: Border.all(
-                                                          color: Colors.blue[900]!, width: 1.5),
-                                                      borderRadius: BorderRadius.circular(20),
+                                                          color: Colors
+                                                              .blue[900]!,
+                                                          width: 1.5),
+                                                      borderRadius: BorderRadius
+                                                          .circular(20),
                                                     ),
                                                     child: InkWell(
                                                       onTap: () {
                                                         setState(() async {
-                                                          final userr = Provider.of<UserProvider>(
+                                                          final userr = Provider
+                                                              .of<UserProvider>(
                                                               context,
                                                               listen: false);
-                                                          FirebaseFirestore.instance
-                                                              .collection("Notifications")
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                              "Notifications")
                                                               .doc()
                                                               .set({
                                                             "data": "follow",
@@ -1109,53 +1200,85 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                             },
                                                             "seen": false,
                                                             "topic": "follow",
-                                                            "time": "${DateTime.now()}",
+                                                            "time": "${DateTime
+                                                                .now()}",
                                                             "senderInfoo": {
-                                                              "userName": userperson.user.name ?? " ",
-                                                              "uid": userperson.user.uId ?? " ",
-                                                              "userImg": userperson.user.photo ?? " ",
+                                                              "userName": userperson
+                                                                  .user.name ??
+                                                                  " ",
+                                                              "uid": userperson
+                                                                  .user.uId ??
+                                                                  " ",
+                                                              "userImg": userperson
+                                                                  .user.photo ??
+                                                                  " ",
                                                             }
                                                           });
-                                                          await service.showNotification(
+                                                          await service
+                                                              .showNotification(
                                                               id: 0,
                                                               title: 'follow ',
-                                                              body: '${userperson.user.name} follow you');
+                                                              body: '${userperson
+                                                                  .user
+                                                                  .name} follow you');
                                                           isfollow = !isfollow;
                                                           if (signInUser.uid !=
-                                                              snapshot.data?.docs[index]["uid"]) {
+                                                              snapshot.data
+                                                                  ?.docs[index]["uid"]) {
                                                             isfollow
-                                                                ? followlist.add(signInUser.uid)
-                                                                : followlist.remove(signInUser.uid);
+                                                                ? followlist
+                                                                .add(
+                                                                signInUser.uid)
+                                                                : followlist
+                                                                .remove(
+                                                                signInUser.uid);
                                                             _fireStore
-                                                                .collection("Users")
-                                                                .doc(snapshot.data?.docs[index]
-                                                            ["uid"])
-                                                                .update({"follower": followlist});
+                                                                .collection(
+                                                                "Users")
+                                                                .doc(
+                                                                snapshot.data
+                                                                    ?.docs[index]
+                                                                ["uid"])
+                                                                .update({
+                                                              "follower": followlist
+                                                            });
                                                             isfollow
-                                                                ? followlist.add(snapshot
-                                                                .data?.docs[index]["uid"])
-                                                                : followlist.remove(snapshot
-                                                                .data?.docs[index]["uid"]);
+                                                                ? followlist
+                                                                .add(snapshot
+                                                                .data
+                                                                ?.docs[index]["uid"])
+                                                                : followlist
+                                                                .remove(snapshot
+                                                                .data
+                                                                ?.docs[index]["uid"]);
                                                             _fireStore
-                                                                .collection("Users")
-                                                                .doc(signInUser.uid)
+                                                                .collection(
+                                                                "Users")
+                                                                .doc(
+                                                                signInUser.uid)
                                                                 .update(
-                                                                {"following": followlist});
+                                                                {
+                                                                  "following": followlist
+                                                                });
                                                           }
                                                         });
                                                       },
-                                                      child: isfollow ?Text(
+                                                      child: isfollow ? Text(
                                                         "Unfollow",
                                                         style: TextStyle(
-                                                            color: Colors.blue[900],
+                                                            color: Colors
+                                                                .blue[900],
                                                             fontSize: 14,
-                                                            fontWeight: FontWeight.w500),
-                                                      ):Text(
-                                                        "follow" ,
+                                                            fontWeight: FontWeight
+                                                                .w500),
+                                                      ) : Text(
+                                                        "follow",
                                                         style: TextStyle(
-                                                            color: Colors.blue[900],
+                                                            color: Colors
+                                                                .blue[900],
                                                             fontSize: 14,
-                                                            fontWeight: FontWeight.w500),
+                                                            fontWeight: FontWeight
+                                                                .w500),
                                                       ),
                                                     ),
                                                   ),
@@ -1334,7 +1457,7 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                     height: 30,
                                                     color: Colors.white,
                                                   ),
-                                                 SizedBox(
+                                                  SizedBox(
                                                     width: 80,
                                                   ),
                                                   InkWell(
@@ -1343,23 +1466,34 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                           context: context,
                                                           useRootNavigator: true,
                                                           isScrollControlled: true,
-                                                          shape:  RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.vertical(
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius
+                                                                .vertical(
                                                               top: Radius
                                                                   .circular(20),
                                                             ),
                                                           ),
-                                                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                                                          clipBehavior: Clip
+                                                              .antiAliasWithSaveLayer,
                                                           builder: (context) {
                                                             return Container(
                                                               color: postColor,
-                                                              height: MediaQuery.of(context).size.height - 30,
-                                                              padding: EdgeInsets.all(10),
+                                                              height: MediaQuery
+                                                                  .of(context)
+                                                                  .size
+                                                                  .height - 30,
+                                                              padding: EdgeInsets
+                                                                  .all(10),
                                                               child: CommentScreen(
                                                                   context,
-                                                                  postid: snapshot.data!.docs[index]["uid"],
-                                                                  ownerid: signInUser.uid,
-                                                                  ownername: userr?.name ??" "),);
+                                                                  postid: snapshot
+                                                                      .data!
+                                                                      .docs[index]["uid"],
+                                                                  ownerid: signInUser
+                                                                      .uid,
+                                                                  ownername: userr
+                                                                      ?.name ??
+                                                                      " "),);
                                                           });
                                                     },
                                                     child: Row(
@@ -1375,8 +1509,11 @@ class _UserProfileScreenState extends State<UserProfileScreen>
                                                           width: 10,
                                                         ),
                                                         Text(
-                                                          "${CacheHelper.getInt(key: "lenofcomment")}",
-                                                          style: TextStyle(color: Colors.black),
+                                                          "${CacheHelper.getInt(
+                                                              key: "lenofcomment")}",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .black),
                                                         ),
                                                       ],
                                                     ),
@@ -1411,20 +1548,6 @@ class _UserProfileScreenState extends State<UserProfileScreen>
         ),
       ),
     );
-  }
-
-  /// Check If Document Exists
-  Future<bool> checkIfDocExists(String docId) async {
-    try {
-      // Get reference to Firestore collection
-      var collectionRef = FirebaseFirestore.instance.collection(
-          "ChatListUsers");
-
-      var doc = await collectionRef.doc(docId).get();
-      return doc.exists;
-    } catch (e) {
-      throw e;
-    }
   }
 }
 

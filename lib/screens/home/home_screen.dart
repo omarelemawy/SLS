@@ -102,12 +102,19 @@ class _HomeScreenState extends State<HomeScreen>
   FirebaseFirestore.instance.collection('Post').where("postType",isEqualTo: "TextPostWithShop").snapshots();
 
   late final LocalNotificationService service;
+  updatefollowuser()async{
+   await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(widget.userid).update({"follower":[],"following":[]});
+    ;
+  }
   @override
   void initState() {
     service = LocalNotificationService();
     service.intialize();
     listenToNotification();
     super.initState();
+    // updatefollowuser();
     getCurrentUser();
     requestpermission();
     storenotifcationtoken();
